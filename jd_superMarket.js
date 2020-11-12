@@ -62,8 +62,13 @@ let shareCodes = [ // IOS本地脚本用户这个列表填入你要助力的好�
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/`, {"open-url": "https://bean.m.jd.com/"});
-        $.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
-        if ($.isNode()) await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+        //$.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
+        //if ($.isNode()) await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+        if ($.isNode()) {
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+        } else {
+          $.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。$.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
+        }
         continue
       }
       message = '';
@@ -353,10 +358,20 @@ async function businessCircleActivity() {
         const receivedPkTeamPrize = await smtg_receivedPkTeamPrize();
         console.log(`商圈PK奖励领取结果：${JSON.stringify(receivedPkTeamPrize)}`)
         if (receivedPkTeamPrize.data.bizCode === 0) {
-          const { pkTeamPrizeInfoVO } = receivedPkTeamPrize.data.result;
-          message += `【商圈PK奖励】${pkTeamPrizeInfoVO.blueCoin}蓝币领取成功\n`;
-          if ($.isNode()) {
-            await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】 ${$.nickName}\n【商圈PK奖励】${pkTeamPrizeInfoVO.blueCoin}蓝币领取成功`)
+          //const { pkTeamPrizeInfoVO } = receivedPkTeamPrize.data.result;
+          //message += `【商圈PK奖励】${pkTeamPrizeInfoVO.blueCoin}蓝币领取成功\n`;
+          //if ($.isNode()) {
+          //  await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】 ${$.nickName}\n【商圈PK奖励】${pkTeamPrizeInfoVO.blueCoin}蓝币领取成功`)
+          if (receivedPkTeamPrize.data.result.pkResult === 1) {
+            const { pkTeamPrizeInfoVO } = receivedPkTeamPrize.data.result;
+            message += `【商圈PK奖励】${pkTeamPrizeInfoVO.blueCoin}蓝币领取成功\n`;
+            if ($.isNode()) {
+              await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】 ${$.nickName}\n【商圈队伍】PK获胜\n【奖励】${pkTeamPrizeInfoVO.blueCoin}蓝币领取成功`)
+            }
+          } else if (receivedPkTeamPrize.data.result.pkResult === 2) {
+            if ($.isNode()) {
+              await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】 ${$.nickName}\n【商圈队伍】PK失败`)
+            }          
           }
         }
       } else if (prizeInfo.pkPrizeStatus === 1) {
@@ -1329,7 +1344,7 @@ function requireConfig() {
     notify = $.isNode() ? require('./sendNotify') : '';
     //Node.js用户请在jdCookie.js处填写京东ck;
     const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-    const jdShareCodes = $.isNode() ? require('./jdSuperMarketShareCodes.js') : '';
+    //const jdShareCodes = $.isNode() ? require('./jdSuperMarketShareCodes.js') : '';
     //IOS等用户直接用NobyDa的jd cookie
     if ($.isNode()) {
       Object.keys(jdCookieNode).forEach((item) => {
@@ -1339,47 +1354,48 @@ function requireConfig() {
       })
       if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
     } else {
-      cookiesArr.push($.getdata('CookieJD'));
-      cookiesArr.push($.getdata('CookieJD2'));
+      //cookiesArr.push($.getdata('CookieJD'));
+      //cookiesArr.push($.getdata('CookieJD2'));
+      cookiesArr.push(...[$.getdata('CookieJD'), $.getdata('CookieJD2')])
     }
     console.log(`共${cookiesArr.length}个京东账号\n`);
     console.log(`京小超已改版,目前暂不用助力, 故无助力码`)
-    if ($.isNode()) {
-      Object.keys(jdShareCodes).forEach((item) => {
-        if (jdShareCodes[item]) {
-          jdSuperMarketShareArr.push(jdShareCodes[item])
-        }
-      })
-    } else {
-      const boxShareCodeArr = ['jd_supermarket1', 'jd_supermarket2', 'jd_supermarket3'];
-      const boxShareCodeArr2 = ['jd2_supermarket1', 'jd2_supermarket2', 'jd2_supermarket3'];
-      const isBox1 = boxShareCodeArr.some((item) => {
-        const boxShareCode = $.getdata(item);
-        return (boxShareCode !== undefined && boxShareCode !== null && boxShareCode !== '');
-      });
-      const isBox2 = boxShareCodeArr2.some((item) => {
-        const boxShareCode = $.getdata(item);
-        return (boxShareCode !== undefined && boxShareCode !== null && boxShareCode !== '');
-      });
-      if (isBox1) {
-        let temp = [];
-        for (const item of boxShareCodeArr) {
-          if ($.getdata(item)) {
-            temp.push($.getdata(item))
-          }
-        }
-        jdSuperMarketShareArr.push(temp.join('@'));
-      }
-      if (isBox2) {
-        let temp = [];
-        for (const item of boxShareCodeArr2) {
-          if ($.getdata(item)) {
-            temp.push($.getdata(item))
-          }
-        }
-        jdSuperMarketShareArr.push(temp.join('@'));
-      }
-    }
+    //if ($.isNode()) {
+    //  Object.keys(jdShareCodes).forEach((item) => {
+    //    if (jdShareCodes[item]) {
+    //      jdSuperMarketShareArr.push(jdShareCodes[item])
+    //    }
+    //  })
+    //} else {
+    //  const boxShareCodeArr = ['jd_supermarket1', 'jd_supermarket2', 'jd_supermarket3'];
+    //  const boxShareCodeArr2 = ['jd2_supermarket1', 'jd2_supermarket2', 'jd2_supermarket3'];
+    //  const isBox1 = boxShareCodeArr.some((item) => {
+    //    const boxShareCode = $.getdata(item);
+    //    return (boxShareCode !== undefined && boxShareCode !== null && boxShareCode !== '');
+    //  });
+    //  const isBox2 = boxShareCodeArr2.some((item) => {
+    //    const boxShareCode = $.getdata(item);
+    //    return (boxShareCode !== undefined && boxShareCode !== null && boxShareCode !== '');
+    //  });
+    //  if (isBox1) {
+    //    let temp = [];
+    //    for (const item of boxShareCodeArr) {
+    //      if ($.getdata(item)) {
+    //        temp.push($.getdata(item))
+    //      }
+    //    }
+    //    jdSuperMarketShareArr.push(temp.join('@'));
+    //  }
+    //  if (isBox2) {
+    //    let temp = [];
+    //    for (const item of boxShareCodeArr2) {
+    //      if ($.getdata(item)) {
+    //        temp.push($.getdata(item))
+    //      }
+    //    }
+    //    jdSuperMarketShareArr.push(temp.join('@'));
+    //  }
+    //}
     // console.log(`\n京小超商圈助力码::${JSON.stringify(jdSuperMarketShareArr)}`);
     // console.log(`您提供了${jdSuperMarketShareArr.length}个账号的助力码\n`);
     resolve()
