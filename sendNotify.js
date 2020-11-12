@@ -74,6 +74,7 @@ if (process.env.IGOT_PUSH_KEY) {
 async function sendNotify(text, desp, params = {}) {
   //提供五种通知
   await serverNotify(text, desp);
+  text = text.match(/.*?(?=\s?-)/g) ? text.match(/.*?(?=\s?-)/g)[0] : text;
   await BarkNotify(text, desp, params);
   await tgBotNotify(text, desp);
   await ddBotNotify(text, desp);
@@ -122,7 +123,8 @@ function BarkNotify(text, desp, params={}) {
   return  new Promise(resolve => {
     if (BARK_PUSH) {
       const options = {
-        url: `${BARK_PUSH}/${encodeURIComponent(text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0])}/${encodeURIComponent(desp)}?sound=${BARK_SOUND}&${querystring.stringify(params)}`,
+        //url: `${BARK_PUSH}/${encodeURIComponent(text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0])}/${encodeURIComponent(desp)}?sound=${BARK_SOUND}&${querystring.stringify(params)}`,
+        url: `${BARK_PUSH}/${encodeURIComponent(text)}/${encodeURIComponent(desp)}?sound=${BARK_SOUND}&${querystring.stringify(params)}`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
@@ -158,7 +160,8 @@ function tgBotNotify(text, desp) {
     if (TG_BOT_TOKEN && TG_USER_ID) {
       const options = {
         url: `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`,
-        body: `chat_id=${TG_USER_ID}&text=${text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0]}\n\n${desp}&disable_web_page_preview=true`,
+        //body: `chat_id=${TG_USER_ID}&text=${text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0]}\n\n${desp}&disable_web_page_preview=true`,
+        body: `chat_id=${TG_USER_ID}&text=${text}\n\n${desp}&disable_web_page_preview=true`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
@@ -209,7 +212,8 @@ function ddBotNotify(text, desp) {
       json: {
         "msgtype": "text",
         "text": {
-          "content": ` ${text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0]}\n\n${desp}`
+          //"content": ` ${text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0]}\n\n${desp}`
+          "content": ` ${text}\n\n${desp}`
         }
       },
       headers: {
@@ -281,7 +285,8 @@ function iGotNotify(text, desp, params={}){
       } 
       const options = {
         url: `https://push.hellyw.com/${IGOT_PUSH_KEY.toLowerCase()}`,
-        body: `title=${text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0]}&content=${desp}&${querystring.stringify(params)}`,
+        //body: `title=${text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0]}&content=${desp}&${querystring.stringify(params)}`,
+        body: `title=${text}&content=${desp}&${querystring.stringify(params)}`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
