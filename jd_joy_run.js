@@ -103,7 +103,8 @@ function getToken() {
   $.log(`${$.name}url\n${url}\n`)
   //if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/\/api\/user\/addUser\?code=\w+&/)) {
   //if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/mirror\/\/api\/user\/addUser\?code=\w+&/)) {
-  if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/mirror\/\/api\/user\/addUser\?code=/)) {
+  //if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/mirror\/\/api\/user\/addUser\?code=/)) {
+  if (isURL(url, /^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/addUser\?code=/)) {
     const body = JSON.parse($response.body);
     const LKYLToken = body.data.token;
     $.log(`${$.name} token\n${LKYLToken}\n`)
@@ -116,7 +117,8 @@ function getToken() {
     $.done({ body: JSON.stringify(body) })
   //} else if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/\/api\/user\/user\/detail\?openId=\w+&/)){
   //} else if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/mirror\/\/api\/user\/user\/detail\?openId=\w+&/)){
-  } else if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/mirror\/\/api\/user\/user\/detail\?openId=/)){
+  //} else if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/mirror\/\/api\/user\/user\/detail\?openId=/)){
+  } else if (isURL(url, /^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/user\/detail\?openId=/)){
     if ($request && $request.method !== 'OPTIONS') {
       const LKYLToken = $request.headers['LKYLToken'];
       //if ($.getdata('jdJoyRunToken')) {
