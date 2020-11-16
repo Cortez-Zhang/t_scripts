@@ -30,7 +30,7 @@ if ($.isNode()) {
   cookiesArr.push($.getdata('CookieJD2'));
 }
 
-const Notice = $.getdata('jdMoneyTreeNoticeTimes') * 1 || 2;//设置运行多少次才通知。默认运行两次脚本通知，其他设置请在BoxJs进行设置
+//const Notice = $.getdata('jdMoneyTreeNoticeTimes') * 1 || 2;//设置运行多少次才通知。默认运行两次脚本通知，其他设置请在BoxJs进行设置
 let jdNotify = true;//是否开启静默运行，默认true开启
 const JD_API_HOST = 'https://ms.jr.jd.com/gw/generic/uc/h5/m';
 let userInfo = null, taskInfo = [], message = '', subTitle = '', fruitTotal = 0;
@@ -87,10 +87,13 @@ async function jd_moneyTree() {
   console.log(`是否弹窗通知::${(($.getdata($.treeMsgTime) * 1) === Notice) && (!jdNotify || jdNotify === 'false')}`);
   $.log(`\n${message}\n`);
   if (!jdNotify || jdNotify === 'false') {
-    if (($.getdata($.treeMsgTime) * 1) === Notice) {
-      $.msg($.name, subTitle, message);
-      $.setdata('0', $.treeMsgTime);
-    }
+    //if (($.getdata($.treeMsgTime) * 1) === Notice) {
+      //$.msg($.name, subTitle, message);
+      //$.setdata('0', $.treeMsgTime);
+    //}
+    
+    $.msg($.name, subTitle, message);
+    $.setdata('0', $.treeMsgTime);  
   }
 }
 function user_info() {
@@ -122,13 +125,13 @@ function user_info() {
                 if (userInfo.realName) {
                   //console.log(`助力码sharePin为：：${userInfo.sharePin}`);
                   $.treeMsgTime = userInfo.sharePin;
-                  if ($.getdata($.treeMsgTime)) {
-                    if ($.getdata($.treeMsgTime) >= Notice) {
-                      $.setdata('0', $.treeMsgTime);
-                    }
-                  } else {
-                    $.setdata('0', $.treeMsgTime);
-                  }
+                  //if ($.getdata($.treeMsgTime)) {
+                    //if ($.getdata($.treeMsgTime) >= Notice) {
+                      //$.setdata('0', $.treeMsgTime);
+                    //}
+                  //} else {
+                    //$.setdata('0', $.treeMsgTime);
+                  //}
                   subTitle = `【${userInfo.nick}】${userInfo.treeInfo.treeName}`;
                   // message += `【我的金果数量】${userInfo.treeInfo.fruit}\n`;
                   // message += `【我的金币数量】${userInfo.treeInfo.coin}\n`;
