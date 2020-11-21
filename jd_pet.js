@@ -94,7 +94,8 @@ async function jdPet() {
     goodsUrl = $.petInfo.goodsInfo && $.petInfo.goodsInfo.goodsUrl;
     // option['media-url'] = goodsUrl;
     // console.log(`初始化萌宠信息完成: ${JSON.stringify(petInfo)}`);
-    if ($.petInfo.petStatus === 5 && $.petInfo.showHongBaoExchangePop) {
+    //if ($.petInfo.petStatus === 5 && $.petInfo.showHongBaoExchangePop) {
+    if ($.petInfo.petStatus === 5 || $.petInfo.petStatus === 6) {
       await slaveHelp();//可以兑换而没有去兑换,也能继续助力好友
       option['open-url'] = "openApp.jdMobile://";
       $.msg($.name, `【提醒⏰】${$.petInfo.goodsInfo.goodsName}已可领取`, '请去京东APP或微信小程序查看', option);
