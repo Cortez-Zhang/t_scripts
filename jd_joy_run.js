@@ -135,6 +135,8 @@ function getToken() {
 
       // $.done({ body: JSON.stringify(body) })
       $.done({ url: url })
+    } else {
+      $.done({})
     }
   }
 }
