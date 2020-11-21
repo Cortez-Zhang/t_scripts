@@ -158,8 +158,8 @@ async function main() {
       $.inviteReward = 0;
       $.runReward = 0;
       console.log(`\n开始【京东账号${$.index}】${UserName}\n`);
-      message = '';
-      subTitle = '';
+      //message = '';
+      //subTitle = '';
       $.jdLogin = true;
       $.LKYLLogin = true;
       console.log(`=============【开始邀请助力】===============`)
