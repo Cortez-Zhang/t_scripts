@@ -79,7 +79,7 @@ async function jd_moneyTree() {
   await sell();
   await myWealth();
   await stealFriendFruit()
-  await msgControl();
+  //await msgControl();
 
   //console.log(`运行脚本次数和设置的次数是否相等::${($.getdata($.treeMsgTime) * 1) === Notice}`);
   //jdNotify = $.getdata('jdMoneyTreeNotify') ? $.getdata('jdMoneyTreeNotify') : jdNotify;
@@ -93,7 +93,7 @@ async function jd_moneyTree() {
     //}
     
     $.msg($.name, subTitle, message);
-    $.setdata('0', $.treeMsgTime);  
+    //$.setdata('0', $.treeMsgTime);  
   }
 }
 function user_info() {
