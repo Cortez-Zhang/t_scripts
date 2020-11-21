@@ -81,10 +81,10 @@ async function jd_moneyTree() {
   await stealFriendFruit()
   await msgControl();
 
-  console.log(`运行脚本次数和设置的次数是否相等::${($.getdata($.treeMsgTime) * 1) === Notice}`);
-  jdNotify = $.getdata('jdMoneyTreeNotify') ? $.getdata('jdMoneyTreeNotify') : jdNotify;
-  console.log(`box订阅静默运行-是否打开::${jdNotify || jdNotify === 'true'}`);
-  console.log(`是否弹窗通知::${(($.getdata($.treeMsgTime) * 1) === Notice) && (!jdNotify || jdNotify === 'false')}`);
+  //console.log(`运行脚本次数和设置的次数是否相等::${($.getdata($.treeMsgTime) * 1) === Notice}`);
+  //jdNotify = $.getdata('jdMoneyTreeNotify') ? $.getdata('jdMoneyTreeNotify') : jdNotify;
+  //console.log(`box订阅静默运行-是否打开::${jdNotify || jdNotify === 'true'}`);
+  //console.log(`是否弹窗通知::${(($.getdata($.treeMsgTime) * 1) === Notice) && (!jdNotify || jdNotify === 'false')}`);
   $.log(`\n${message}\n`);
   if (!jdNotify || jdNotify === 'false') {
     //if (($.getdata($.treeMsgTime) * 1) === Notice) {
