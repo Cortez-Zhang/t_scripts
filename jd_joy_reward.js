@@ -142,6 +142,8 @@ async function joyReward() {
             } else {
               console.log(`兑奖异常:${JSON.stringify($.exchangeRes)}`)
             }
+          } else {
+            console.log(`兑换京豆异常:${JSON.stringify($.exchangeRes)}`)
           }
         } else {
           console.log(`兑换${rewardNum}京豆失败，原因：京豆库存不足，已抢完，请下一场再兑换`)
@@ -154,7 +156,8 @@ async function joyReward() {
       console.log('您设置了不兑换京豆,如需兑换京豆，请去BoxJs重新设置或修改第20行代码')
     }
   } else {
-    console.log(`${$.name}异常,${JSON.stringify($.getExchangeRewardsRes)}`)
+    //console.log(`${$.name}异常,${JSON.stringify($.getExchangeRewardsRes)}`)
+    console.log(`${$.name}getExchangeRewards异常,${JSON.stringify($.getExchangeRewardsRes)}`)
   }
 }
 function getExchangeRewards() {
@@ -176,10 +179,18 @@ function getExchangeRewards() {
     }
     $.get(option, (err, resp, data) => {
       try {
-        if (data) {
-          $.getExchangeRewardsRes = JSON.parse(data);
+        //if (data) {
+          //$.getExchangeRewardsRes = JSON.parse(data);
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           console.log(`${$.name}京豆api返回数据为空，请检查自身原因`)
+          if (data) {
+            $.getExchangeRewardsRes = JSON.parse(data);
+          } else {
+            console.log(`${$.name}api返回数据为空，请检查自身原因`)
+          }
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -212,10 +223,18 @@ function exchange(saleInfoId, orderSource) {
     $.post(option, (err, resp, data) => {
       try {
         // console.log('exchange', data)
-        if (data) {
-          $.exchangeRes = JSON.parse(data);
+        //if (data) {
+          //$.exchangeRes = JSON.parse(data);
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          console.log(`${$.name}京豆api返回数据为空，请检查自身原因`)
+          //console.log(`${$.name}京豆api返回数据为空，请检查自身原因`)
+          if (data) {
+            $.exchangeRes = JSON.parse(data);
+          } else {
+            console.log(`${$.name}api返回数据为空，请检查自身原因`)
+          }
         }
       } catch (e) {
         $.logErr(e, resp);
