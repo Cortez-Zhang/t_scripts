@@ -14,8 +14,11 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const exec = require('child_process').execSync
 const fs = require('fs')
 const download = require('download');
-const path = "./result.txt";
-const JD_DailyBonusPath = "./JD_DailyBonus.js";
+//const path = "./result.txt";
+//const JD_DailyBonusPath = "./JD_DailyBonus.js";
+let resultPath = "./result.txt";
+let JD_DailyBonusPath = "./JD_DailyBonus.js";
+let outPutUrl = './';
 let cookiesArr = [], cookie = '';
 
 if ($.isNode()) {
@@ -29,9 +32,11 @@ if ($.isNode()) {
     $.msg($.name, '【提示】请先获取cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {"open-url": "https://bean.m.jd.com/"});
     return;
   }
+  await requireConfig();
   // 下载最新代码
   await downFile();
-  const content = await fs.readFileSync('./JD_DailyBonus.js', 'utf8')
+  //const content = await fs.readFileSync('./JD_DailyBonus.js', 'utf8')
+  const content = await fs.readFileSync(JD_DailyBonusPath, 'utf8')
   for (let i =0; i < cookiesArr.length; i++) {
     cookie = cookiesArr[i];
     if (cookie) {
@@ -40,7 +45,8 @@ if ($.isNode()) {
       $.nickName = '';
       await TotalBean();
       console.log(`*****************开始京东账号${$.index} ${$.nickName || $.UserName}京豆签到*******************\n`);
-      console.log(`⚠⚠⚠⚠⚠⚠⚠⚠  如遇到Bark APP推送通知消息失败的,请换用其他通知方式,Bark对推送内容长度有限制  ⚠⚠⚠⚠⚠⚠⚠⚠⚠\n`)
+      //console.log(`⚠⚠⚠⚠⚠⚠⚠⚠  如遇到Bark APP推送通知消息失败的,请换用其他通知方式,Bark对推送内容长度有限制  ⚠⚠⚠⚠⚠⚠⚠⚠⚠\n`)
+      console.log(`⚠️⚠️⚠️⚠️目前Bark APP推送通知消息失败的,请换用其他通知方式,Bark对推送内容长度有限制 ⚠️⚠️⚠️⚠️\n`)      
       await changeFile(content);
       await  execSign();
     }
@@ -56,7 +62,8 @@ async function execSign() {
     } else {
       // 如果没有提供通知推送，则打印日志
       console.log('没有提供通知推送，则打印脚本执行日志')
-      await exec(`node JD_DailyBonus.js`, { stdio: "inherit" });
+      //await exec(`node JD_DailyBonus.js`, { stdio: "inherit" });
+      await exec(`${process.execPath} ${JD_DailyBonusPath}`, { stdio: "inherit" });
     }
     // await exec("node JD_DailyBonus.js", { stdio: "inherit" });
     // console.log('执行完毕', new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toLocaleDateString())
@@ -64,8 +71,10 @@ async function execSign() {
     if ($.isNode()) {
       let notifyContent = "";
       let BarkContent = '';
-      if (fs.existsSync(path)) {
-        notifyContent = await fs.readFileSync(path, "utf8");
+      //if (fs.existsSync(path)) {
+        //notifyContent = await fs.readFileSync(path, "utf8");
+      if (fs.existsSync(resultPath)) {
+        notifyContent = await fs.readFileSync(resultPath, "utf8");
         const barkContentStart = notifyContent.indexOf('【签到概览】')
         const barkContentEnd = notifyContent.length;
         if (process.env.JD_BEAN_SIGN_STOP_NOTIFY === 'true') return
@@ -90,7 +99,8 @@ async function execSign() {
     }
     //运行完成后，删除下载的文件
     console.log('运行完成后，删除下载的文件\n')
-    await deleteFile(path);//删除result.txt
+    //await deleteFile(path);//删除result.txt
+    await deleteFile(resultPath);//删除result.txt
     await deleteFile(JD_DailyBonusPath);//删除JD_DailyBonus.js
     console.log(`*****************京东账号${$.index} ${$.nickName || $.UserName}京豆签到完成*******************\n`);
   } catch (e) {
@@ -112,7 +122,13 @@ async function downFile () {
   } else {
     url = 'https://cdn.jsdelivr.net/gh/NobyDa/Script@master/JD-DailyBonus/JD_DailyBonus.js';
   }
-  await download(url, './')
+  //await download(url, './')
+  try {
+    await download(url, outPutUrl);
+    console.log('文件下载完毕');
+  } catch (e) {
+    console.log("文件下载异常:" + e);
+  }
 }
 
 async function changeFile (content) {
@@ -199,6 +215,18 @@ function downloadUrl(url = 'https://raw.githubusercontent.com/NobyDa/Script/mast
         resolve();
       }
     })
+  })
+}
+
+function requireConfig() {
+  return new Promise(resolve => {
+    const file = 'jd_bean_sign.js';
+    fs.access(file, fs.constants.W_OK, (err) => {
+      resultPath = err ? './tmp/result.txt' : resultPath;
+      JD_DailyBonusPath = err ? './tmp/JD_DailyBonus.js' : JD_DailyBonusPath;
+      outPutUrl = err ? './tmp/' : outPutUrl;
+      resolve()
+    });
   })
 }
 
