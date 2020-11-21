@@ -8,7 +8,7 @@ const $ = new Env('天天提鹅');
 let cookiesArr = [], cookie = '';
 const JD_API_HOST = 'https://ms.jr.jd.com/gw/generic/uc/h5/m';
 const notify = $.isNode() ? require('./sendNotify') : '';
-let jdNotify = false;//是否开启推送互助码
+//let jdNotify = false;//是否开启推送互助码
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 if ($.isNode()) {
@@ -44,11 +44,11 @@ if ($.isNode()) {
         }       
         continue
       }
-      message = '';
-      subTitle = '';
-      goodsUrl = '';
-      taskInfoKey = [];
-      option = {};
+      //message = '';
+      //subTitle = '';
+      //goodsUrl = '';
+      //taskInfoKey = [];
+      //option = {};
       await jdDailyEgg();
     }
   }
