@@ -93,17 +93,6 @@ function serverNotify(text, desp, timeout = 2100) {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       }
-      //$.post(options, (err, resp, data) => {
-        //try {
-          //if (err) {
-            //console.log('\n发送通知调用API失败！！\n')
-            //console.log(err);
-          //} else {
-            //data = JSON.parse(data);
-            //if (data.errno === 0) {
-              //console.log('\nserver酱发送通知消息成功\n')
-            //} else if (data.errno === 1024) {
-              //console.log('\nPUSH_KEY 错误\n')
       setTimeout(() => {
         $.post(options, (err, resp, data) => {
           try {
@@ -125,12 +114,6 @@ function serverNotify(text, desp, timeout = 2100) {
           } finally {
             resolve(data);
           }
-        //} catch (e) {
-          //$.logErr(e, resp);
-        //} finally {
-          //resolve(data);
-        //}
-      //})
         })
       }, timeout)
     } else {
@@ -144,7 +127,6 @@ function BarkNotify(text, desp, params={}) {
   return  new Promise(resolve => {
     if (BARK_PUSH) {
       const options = {
-        //url: `${BARK_PUSH}/${encodeURIComponent(text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0])}/${encodeURIComponent(desp)}?sound=${BARK_SOUND}&${querystring.stringify(params)}`,
         url: `${BARK_PUSH}/${encodeURIComponent(text)}/${encodeURIComponent(desp)}?sound=${BARK_SOUND}&${querystring.stringify(params)}`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -181,7 +163,6 @@ function tgBotNotify(text, desp) {
     if (TG_BOT_TOKEN && TG_USER_ID) {
       const options = {
         url: `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`,
-        //body: `chat_id=${TG_USER_ID}&text=${text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0]}\n\n${desp}&disable_web_page_preview=true`,
         body: `chat_id=${TG_USER_ID}&text=${text}\n\n${desp}&disable_web_page_preview=true`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -233,7 +214,6 @@ function ddBotNotify(text, desp) {
       json: {
         "msgtype": "text",
         "text": {
-          //"content": ` ${text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0]}\n\n${desp}`
           "content": ` ${text}\n\n${desp}`
         }
       },
@@ -303,10 +283,9 @@ function iGotNotify(text, desp, params={}){
         console.log('\n您所提供的IGOT_PUSH_KEY无效\n')
         resolve()
         return 
-      } 
+      }
       const options = {
         url: `https://push.hellyw.com/${IGOT_PUSH_KEY.toLowerCase()}`,
-        //body: `title=${text.match(/.*?(?=\s?-)/g) && text.match(/.*?(?=\s?-)/g)[0]}&content=${desp}&${querystring.stringify(params)}`,
         body: `title=${text}&content=${desp}&${querystring.stringify(params)}`,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
