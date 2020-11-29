@@ -105,7 +105,8 @@ function unsubscribeGoods() {
 
             console.log(`是否匹配：：${item.commTitle.indexOf(stopGoods.replace(/\ufffc|\s*/g, ''))}`)
 
-            if (stopGoods && item.commTitle.indexOf(stopGoods.replace(/\ufffc|\s*/g, '')) === 0) {
+            //if (stopGoods && item.commTitle.indexOf(stopGoods.replace(/\ufffc|\s*/g, '')) === 0) {
+            if (stopGoods && item.commTitle.indexOf(stopGoods.replace(/\ufffc|\s*/g, '')) > -1) {
               console.log(`匹配到了您设定的商品--${stopGoods}，不在进行取消关注商品`)
               break;
             }
