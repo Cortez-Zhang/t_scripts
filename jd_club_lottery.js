@@ -144,8 +144,10 @@ async function shaking() {
       console.log(`新版-剩余摇奖次数：${newShakeBeanRes.data.remainLotteryTimes}`)
       if (newShakeBeanRes.data && newShakeBeanRes.data.rewardBeanAmount) {
         $.prizeBeanCount += newShakeBeanRes.data.rewardBeanAmount;
+        console.log(`恭喜你，中奖了，获得${newShakeBeanRes.data.rewardBeanAmount}京豆\n`)
       } else {
-        console.log(`未中奖`)
+        //console.log(`未中奖`)
+        console.log(`未中奖\n`)
       }
     }
   }
