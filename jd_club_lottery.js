@@ -124,18 +124,7 @@ async function doTasks() {
   }
 }
 async function shaking() {
-  for (let i = 0; i < new Array($.freeTimes).fill('').length; i++) {
-    console.log(`开始摇奖`)
-    await $.wait(1000);
-    const shakeBeanRes = await shakeBean();
-    if (shakeBeanRes.success) {
-      console.log(`剩余摇奖次数：${shakeBeanRes.data.luckyBox.freeTimes}`)
-      if (shakeBeanRes.data && shakeBeanRes.data.prizeBean) {
-        $.prizeBeanCount += shakeBeanRes.data.prizeBean.count;
-        $.totalBeanCount = shakeBeanRes.data.luckyBox.totalBeanCount;
-      }
-    }
-  }
+
   for (let i = 0; i < new Array($.leftShakingTimes).fill('').length; i++) {
     console.log(`开始新版-摇奖`)
     await $.wait(2000);
@@ -148,6 +137,18 @@ async function shaking() {
       } else {
         //console.log(`未中奖`)
         console.log(`未中奖\n`)
+      }
+    }
+  }
+  for (let i = 0; i < new Array($.freeTimes).fill('').length; i++) {
+    console.log(`开始摇奖`)
+    await $.wait(1000);
+    const shakeBeanRes = await shakeBean();
+    if (shakeBeanRes.success) {
+      console.log(`剩余摇奖次数：${shakeBeanRes.data.luckyBox.freeTimes}`)
+      if (shakeBeanRes.data && shakeBeanRes.data.prizeBean) {
+        $.prizeBeanCount += shakeBeanRes.data.prizeBean.count;
+        $.totalBeanCount = shakeBeanRes.data.luckyBox.totalBeanCount;
       }
     }
   }
