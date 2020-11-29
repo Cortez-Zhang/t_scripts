@@ -184,6 +184,7 @@ function vvipclub_shaking_info() {
           data = JSON.parse(data);
           if (data.success) {
             $.leftShakingTimes = data.data.leftShakingTimes;//剩余抽奖次数
+            console.log(`新版——摇奖次数${$.leftShakingTimes}`);
           }
         }
       } catch (e) {
