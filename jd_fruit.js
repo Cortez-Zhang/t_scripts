@@ -790,9 +790,17 @@ async function clockInIn() {
 }
 //
 async function getAwardInviteFriend() {
-  await friendListInitForFarm();
-  await receiveFriendInvite();
+  await friendListInitForFarm();//查询好友列表
   console.log(`\n今日已邀请好友${$.friendList.inviteFriendCount}个 / 每日邀请上限${$.friendList.inviteFriendMax}个`);
+  console.log(`开始删除${$.friendList.friends.length}个好友,可拿每天的邀请奖励`);
+  for (let friend of $.friendList.friends) {
+    console.log(`\n开始删除好友 [${friend.shareCode}]`);
+    const deleteFriendForFarm = await request('deleteFriendForFarm', { "shareCode": `${friend.shareCode}`,"version":8,"channel":1 });
+    if (deleteFriendForFarm && deleteFriendForFarm.code === '0') {
+      console.log(`删除好友 [${friend.shareCode}] 成功\n`);
+    }
+  }
+  await receiveFriendInvite();//为他人助力,接受邀请成为别人的好友
   if ($.friendList.inviteFriendCount > 0) {
     if ($.friendList.inviteFriendCount > $.friendList.inviteFriendGotAwardCount) {
       console.log('开始领取邀请好友的奖励');
@@ -891,9 +899,9 @@ async function receiveFriendInvite() {
     await inviteFriend(code);
     console.log(`接收邀请成为好友结果:${JSON.stringify($.inviteFriendRes.helpResult)}`)
     if ($.inviteFriendRes.helpResult.code === '0') {
-      console.log(`您已成为${$.inviteFriendRes.helpResult.masterUserInfo.nickName}的好友`)
+      console.log(`成功,您已成为${$.inviteFriendRes.helpResult.masterUserInfo.nickName}的好友`)
     } else if ($.inviteFriendRes.helpResult.code === '17') {
-      console.log(`对方已是您的好友`)
+      console.log(`失败,对方已是您的好友`)
     }
   }
   // console.log(`开始接受6fbd26cc27ac44d6a7fed34092453f77的邀请\n`)
