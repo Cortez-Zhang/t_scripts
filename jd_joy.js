@@ -37,6 +37,7 @@ if ($.isNode()) {
 }
 let message = '', subTitle = '';
 let FEED_NUM = ($.getdata('joyFeedCount') * 1) || 10;   //每次喂养数量 [10,20,40,80]
+let teamLevel = 2;//参加多少人的赛跑比赛，默认是双人赛跑，可选2，10,50。其他不可选，其中2代表参加双人PK赛，10代表参加10人突围赛，50代表参加50人挑战赛
 //是否参加宠汪汪双人赛跑（据目前观察，参加双人赛跑不消耗狗粮,如需参加其他多人赛跑，请关闭）
 // 默认 'true' 参加双人赛跑，如需关闭 ，请改成 'false';
 let joyRunFlag = true;
@@ -138,11 +139,12 @@ async function joinTwoPeopleRun() {
       let raceUsers = $.petRaceResult.data.raceUsers;
       console.log(`赛跑状态：${petRaceResult}\n`);
       if (petRaceResult === 'not_participate') {
-        console.log('暂未参赛，现在为您参加双人赛跑');
-        await runMatch(2);
+        teamLevel = $.isNode() ? (process.env.JOY_TEAM_LEVEL ? process.env.JOY_TEAM_LEVEL : teamLevel) : ($.getdata('JOY_TEAM_LEVEL') ? $.getdata('JOY_TEAM_LEVEL') : teamLevel);
+        console.log(`暂未参赛，现在为您参加${teamLevel}人赛跑`);
+        await runMatch(teamLevel * 1);
         if ($.runMatchResult.success) {
-          console.log(`双人赛跑参加成功\n`);
-          message += `双人赛跑：成功参加\n`;
+          console.log(`${teamLevel}人赛跑参加成功\n`);
+          message += `${teamLevel}人赛跑：成功参加\n`;
           await getPetRace();
           petRaceResult = $.petRaceResult.data.petRaceResult;
           raceUsers = $.petRaceResult.data.raceUsers;
@@ -158,10 +160,16 @@ async function joinTwoPeopleRun() {
       }
       if (petRaceResult === 'unreceive') {
         console.log('今日参赛的比赛已经结束，现在领取奖励');
+        await getWinCoin();
+        let winCoin = 0;
+        if ($.getWinCoinRes && $.getWinCoinRes.success) {
+          winCoin = $.getWinCoinRes.data.winCoin;
+        }
         await receiveJoyRunAward();
         console.log(`领取赛跑奖励结果：${JSON.stringify($.receiveJoyRunAwardRes)}`)
         if ($.receiveJoyRunAwardRes.success) {
-          $.msg($.name, '双人赛跑取得获胜', `【京东账号${$.index}】${$.nickName}\n太棒了,恭喜您获得300积分奖励`)
+          $.msg($.name, '', `【京东账号${$.index}】${$.nickName}\n太棒了,${teamLevel}人赛跑取得获胜\n恭喜您已获得${winCoin}积分奖励`);
+          await notify.sendNotify(`${$.name} - 京东账号${$.index} - ${$.nickName}`, `京东账号${$.index}${$.nickName}\n${teamLevel}人赛跑取得获胜\n恭喜您已获得${winCoin}积分奖励`)
         }
       }
       if (petRaceResult === 'participate') {
@@ -642,6 +650,29 @@ function getBackupInfo() {
           // console.log('查询应援团信息API',(data))
           // $.appGetPetTaskConfigRes = JSON.parse(data);
           $.getBackupInfoResult = JSON.parse(data);
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
+//查询赛跑获得多少积分
+function getWinCoin() {
+  return new Promise(resolve => {
+    const url = `${weAppUrl}/combat/detail/v2?help=false&reqSource=weapp`;
+    $.get(taskUrl(url, 'draw.jdfcloud.com', `weapp`), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
+        } else {
+          // console.log('查询应援团信息API',(data))
+          // $.appGetPetTaskConfigRes = JSON.parse(data);
+          if (data) {
+            $.getWinCoinRes = JSON.parse(data);
+          }
         }
       } catch (e) {
         $.logErr(e, resp);
