@@ -60,8 +60,7 @@ let randomCount = $.isNode() ? 20 : 5;
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/`, {"open-url": "https://bean.m.jd.com/"});
-        //$.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
-        //if ($.isNode()) await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+
         if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
         } else {
@@ -97,7 +96,7 @@ async function jdPlantBean() {
     awardState = roundList[0].awardState;
     $.taskList = $.plantBeanIndexResult.data.taskList;
     subTitle = `【京东昵称】${$.plantBeanIndexResult.data.plantUserInfo.plantNickName}`;
-    message += `【上期时间】${roundList[0].dateDesc}\n`;
+    message += `【上期时间】${roundList[0].dateDesc.replace('上期 ', '')}\n`;
     message += `【上期成长值】${roundList[0].growth}\n`;
     await receiveNutrients();//定时领取营养液
     await doHelp();//助力
@@ -502,7 +501,7 @@ async function plantBeanIndex() {
   $.plantBeanIndexResult = await request('plantBeanIndex');//plantBeanIndexBody
 }
 function readShareCode() {
-  return new Promise(resolve => {
+  return new Promise(async resolve => {
     $.get({url: `http://baidu.com/${randomCount}/`}, (err, resp, data) => {
       try {
         if (err) {
@@ -520,6 +519,8 @@ function readShareCode() {
         resolve(data);
       }
     })
+    await $.wait(15000);
+    resolve()
   })
 }
 //格式化助力码

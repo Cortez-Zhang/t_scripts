@@ -439,7 +439,7 @@ async function showMsg() {
   }
 }
 function readShareCode() {
-  return new Promise(resolve => {
+  return new Promise(async resolve => {
     $.get({url: `http://baidu.com/${randomCount}/`}, (err, resp, data) => {
       try {
         if (err) {
@@ -457,6 +457,8 @@ function readShareCode() {
         resolve(data);
       }
     })
+    await $.wait(10000);
+    resolve()
   })
 }
 function shareCodesFormat() {
