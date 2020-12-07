@@ -135,11 +135,11 @@ async function joinTwoPeopleRun() {
     console.log(`\n===========以下是双人赛跑信息========\n`)
     await getPetRace();
     if ($.petRaceResult) {
+      teamLevel = $.isNode() ? (process.env.JOY_TEAM_LEVEL ? process.env.JOY_TEAM_LEVEL : teamLevel) : ($.getdata('JOY_TEAM_LEVEL') ? $.getdata('JOY_TEAM_LEVEL') : teamLevel);
       let petRaceResult = $.petRaceResult.data.petRaceResult;
       let raceUsers = $.petRaceResult.data.raceUsers;
       console.log(`赛跑状态：${petRaceResult}\n`);
       if (petRaceResult === 'not_participate') {
-        teamLevel = $.isNode() ? (process.env.JOY_TEAM_LEVEL ? process.env.JOY_TEAM_LEVEL : teamLevel) : ($.getdata('JOY_TEAM_LEVEL') ? $.getdata('JOY_TEAM_LEVEL') : teamLevel);
         console.log(`暂未参赛，现在为您参加${teamLevel}人赛跑`);
         await runMatch(teamLevel * 1);
         if ($.runMatchResult.success) {
@@ -169,7 +169,7 @@ async function joinTwoPeopleRun() {
         console.log(`领取赛跑奖励结果：${JSON.stringify($.receiveJoyRunAwardRes)}`)
         if ($.receiveJoyRunAwardRes.success) {
           $.msg($.name, '', `【京东账号${$.index}】${$.nickName}\n太棒了,${teamLevel}人赛跑取得获胜\n恭喜您已获得${winCoin}积分奖励`);
-          await notify.sendNotify(`${$.name} - 京东账号${$.index} - ${$.nickName}`, `京东账号${$.index}${$.nickName}\n${teamLevel}人赛跑取得获胜\n恭喜您已获得${winCoin}积分奖励`)
+          if ($.isNode()) await notify.sendNotify(`${$.name} - 京东账号${$.index} - ${$.nickName}`, `京东账号${$.index}${$.nickName}\n${teamLevel}人赛跑取得获胜\n恭喜您已获得${winCoin}积分奖励`)
         }
       }
       if (petRaceResult === 'participate') {
@@ -613,6 +613,7 @@ function getPetRace() {
 }
 //参加赛跑API
 function runMatch(teamLevel, timeout = 5000) {
+  if (teamLevel === 10 || teamLevel === 50) timeout = 60000;
   console.log(`正在参赛中，请稍等${timeout / 1000}秒，以防多个账号匹配到统一赛场\n`)
   return new Promise(async resolve => {
     await $.wait(timeout);
