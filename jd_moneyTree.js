@@ -26,8 +26,12 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr.push($.getdata('CookieJD'));
-  cookiesArr.push($.getdata('CookieJD2'));
+  let cookiesData = $.getdata('CookiesJD') || "[]";
+  cookiesData = jsonParse(cookiesData);
+  cookiesArr = cookiesData.map(item => item.cookie);
+  cookiesArr.reverse();
+  cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
+  cookiesArr.reverse();
 }
 
 //const Notice = $.getdata('jdMoneyTreeNoticeTimes') * 1 || 2;//设置运行多少次才通知。默认运行两次脚本通知，其他设置请在BoxJs进行设置
@@ -123,7 +127,7 @@ function user_info() {
                 userInfo = res.resultData.data;
                 // userInfo.realName = null;
                 if (userInfo.realName) {
-                  //console.log(`助力码sharePin为：：${userInfo.sharePin}`);
+                  // console.log(`助力码sharePin为：：${userInfo.sharePin}`);
                   $.treeMsgTime = userInfo.sharePin;
                   //if ($.getdata($.treeMsgTime)) {
                     //if ($.getdata($.treeMsgTime) >= Notice) {
@@ -661,6 +665,17 @@ function taskurl(function_id, body) {
       'User-Agent' : $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
       'Referer' : `https://uua.jr.jd.com/uc-fe-wxgrowing/moneytree/index/?channel=yxhd&lng=113.325896&lat=23.204600&sid=2d98e88cf7d182f60d533476c2ce777w&un_area=19_1601_50258_51885`,
       'Accept-Language' : `zh-cn`
+    }
+  }
+}
+function jsonParse(str) {
+  if (typeof str == "string") {
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      console.log(e);
+      $.msg($.name, '', '不要在BoxJS手动复制粘贴修改cookie')
+      return [];
     }
   }
 }

@@ -86,7 +86,7 @@ async function jdFruit() {
     // option['media-url'] = $.farmInfo.farmUserPro.goodsImage;
     subTitle = `【京东账号${$.index}】${$.nickName}`;
     message = `【水果名称】${$.farmInfo.farmUserPro.name}\n`;
-    console.log(`\n【您的互助码shareCode】 ${$.farmInfo.farmUserPro.shareCode}\n`);
+    console.log(`\n【您的${$.name}互助码shareCode】 ${$.farmInfo.farmUserPro.shareCode}\n`);
     console.log(`\n【已成功兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`);
     message += `【已兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`;
     await masterHelpShare();//助力好友
@@ -662,17 +662,6 @@ async function masterHelpShare() {
       console.log(`助力失败::${JSON.stringify($.helpResult)}`);
     }
   }
-  //let helpSuccessPeoplesKey = timeFormat() + $.farmInfo.farmUserPro.shareCode;
-  //if (!$.getdata(helpSuccessPeoplesKey)) {
-  //  //把前一天的清除
-  //  $.setdata('', timeFormat(Date.now() - 24 * 60 * 60 * 1000) + $.farmInfo.farmUserPro.shareCode);
-  //  $.setdata('', helpSuccessPeoplesKey);
-  //}
-  //if (helpSuccessPeoples) {
-  //  if ($.getdata(helpSuccessPeoplesKey)) {
-  //    $.setdata($.getdata(helpSuccessPeoplesKey) + ',' + helpSuccessPeoples, helpSuccessPeoplesKey);
-  //  } else {
-  //    $.setdata(helpSuccessPeoples, helpSuccessPeoplesKey);
   if ($.isLoon() || $.isQuanX() || $.isSurge()) {
     let helpSuccessPeoplesKey = timeFormat() + $.farmInfo.farmUserPro.shareCode;
     if (!$.getdata(helpSuccessPeoplesKey)) {
@@ -689,7 +678,6 @@ async function masterHelpShare() {
     }
     helpSuccessPeoples = $.getdata(helpSuccessPeoplesKey);
   }
-  //helpSuccessPeoples = $.getdata(helpSuccessPeoplesKey);
   if (helpSuccessPeoples && helpSuccessPeoples.length > 0) {
     message += `【您助力的好友👬】${helpSuccessPeoples.substr(0, helpSuccessPeoples.length - 1)}\n`;
   }

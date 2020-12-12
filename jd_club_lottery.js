@@ -32,8 +32,12 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr.push($.getdata('CookieJD'));
-  cookiesArr.push($.getdata('CookieJD2'));
+  let cookiesData = $.getdata('CookiesJD') || "[]";
+  cookiesData = jsonParse(cookiesData);
+  cookiesArr = cookiesData.map(item => item.cookie);
+  cookiesArr.reverse();
+  cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
+  cookiesArr.reverse();
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 !(async () => {
@@ -127,7 +131,7 @@ async function shaking() {
 
   for (let i = 0; i < new Array($.leftShakingTimes).fill('').length; i++) {
     console.log(`开始新版-摇奖`)
-    await $.wait(2000);
+    // await $.wait(500);
     const newShakeBeanRes = await vvipclub_shaking_lottery();
     if (newShakeBeanRes.success) {
       console.log(`新版-剩余摇奖次数：${newShakeBeanRes.data.remainLotteryTimes}`)
@@ -380,7 +384,17 @@ function TotalBean() {
     })
   })
 }
-//function taskUrl(function_id, body = {}) {
+function jsonParse(str) {
+  if (typeof str == "string") {
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      console.log(e);
+      $.msg($.name, '', '不要在BoxJS手动复制粘贴修改cookie')
+      return [];
+    }
+  }
+}
 function taskUrl(function_id, body = {}, appId = 'vip_h5') {
   return {
     //url: `${JD_API_HOST}?functionId=${function_id}&appid=vip_h5&body=${escape(JSON.stringify(body))}&_=${Date.now()}`,

@@ -32,8 +32,12 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr.push($.getdata('CookieJD'));
-  cookiesArr.push($.getdata('CookieJD2'));
+  let cookiesData = $.getdata('CookiesJD') || "[]";
+  cookiesData = jsonParse(cookiesData);
+  cookiesArr = cookiesData.map(item => item.cookie);
+  cookiesArr.reverse();
+  cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
+  cookiesArr.reverse();
 }
 let message = '', subTitle = '';
 let FEED_NUM = ($.getdata('joyFeedCount') * 1) || 10;   //每次喂养数量 [10,20,40,80]
@@ -60,8 +64,7 @@ const weAppUrl = 'https://draw.jdfcloud.com//pet';
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/`, {"open-url": "https://bean.m.jd.com/"});
-        //$.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
-        //if ($.isNode()) await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+
         if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
         } else {
@@ -809,6 +812,17 @@ function taskPostUrl(url, body, reqSource, Host, ContentType) {
       'Referer': 'https://jdjoy.jd.com/pet/index',
       'Accept-Language': 'zh-cn',
       'Accept-Encoding': 'gzip, deflate, br',
+    }
+  }
+}
+function jsonParse(str) {
+  if (typeof str == "string") {
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      console.log(e);
+      $.msg($.name, '', '不要在BoxJS手动复制粘贴修改cookie')
+      return [];
     }
   }
 }
