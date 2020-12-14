@@ -352,7 +352,7 @@ async function businessCircleActivity() {
           }
         ]
         Teams = $.updatePkActivityIdRes['Teams'] || Teams;
-        const randomNum = randomFriendPin(0, Teams.length - 1);
+        const randomNum = randomNumber(0, Teams.length);
 
         const res = await smtg_joinPkTeam(Teams[randomNum].teamId, Teams[randomNum].inviteCode, pkActivityId);
         if (res && res.data.bizCode === 0) {
@@ -472,7 +472,7 @@ async function businessCircleActivity() {
       const BusinessCircleList = await smtg_getBusinessCircleList();
       if (BusinessCircleList.data.bizCode === 0) {
         const { businessCircleVOList } = BusinessCircleList.data.result;
-        const { circleId } = businessCircleVOList[randomFriendPin(0, businessCircleVOList.length -1)];
+        const { circleId } = businessCircleVOList[randomNumber(0, businessCircleVOList.length)];
         const joinBusinessCircleRes = await smtg_joinBusinessCircle(circleId);
         console.log(`随机加入商圈结果：${JSON.stringify(joinBusinessCircleRes)}`)
       }
@@ -1377,7 +1377,6 @@ function requireConfig() {
     notify = $.isNode() ? require('./sendNotify') : '';
     //Node.js用户请在jdCookie.js处填写京东ck;
     const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-    //const jdShareCodes = $.isNode() ? require('./jdSuperMarketShareCodes.js') : '';
     //IOS等用户直接用NobyDa的jd cookie
     if ($.isNode()) {
       Object.keys(jdCookieNode).forEach((item) => {
@@ -1396,42 +1395,6 @@ function requireConfig() {
     }
     console.log(`共${cookiesArr.length}个京东账号\n`);
     console.log(`京小超已改版,目前暂不用助力, 故无助力码`)
-    //if ($.isNode()) {
-    //  Object.keys(jdShareCodes).forEach((item) => {
-    //    if (jdShareCodes[item]) {
-    //      jdSuperMarketShareArr.push(jdShareCodes[item])
-    //    }
-    //  })
-    //} else {
-    //  const boxShareCodeArr = ['jd_supermarket1', 'jd_supermarket2', 'jd_supermarket3'];
-    //  const boxShareCodeArr2 = ['jd2_supermarket1', 'jd2_supermarket2', 'jd2_supermarket3'];
-    //  const isBox1 = boxShareCodeArr.some((item) => {
-    //    const boxShareCode = $.getdata(item);
-    //    return (boxShareCode !== undefined && boxShareCode !== null && boxShareCode !== '');
-    //  });
-    //  const isBox2 = boxShareCodeArr2.some((item) => {
-    //    const boxShareCode = $.getdata(item);
-    //    return (boxShareCode !== undefined && boxShareCode !== null && boxShareCode !== '');
-    //  });
-    //  if (isBox1) {
-    //    let temp = [];
-    //    for (const item of boxShareCodeArr) {
-    //      if ($.getdata(item)) {
-    //        temp.push($.getdata(item))
-    //      }
-    //    }
-    //    jdSuperMarketShareArr.push(temp.join('@'));
-    //  }
-    //  if (isBox2) {
-    //    let temp = [];
-    //    for (const item of boxShareCodeArr2) {
-    //      if ($.getdata(item)) {
-    //        temp.push($.getdata(item))
-    //      }
-    //    }
-    //    jdSuperMarketShareArr.push(temp.join('@'));
-    //  }
-    //}
     // console.log(`\n京小超商圈助力码::${JSON.stringify(jdSuperMarketShareArr)}`);
     // console.log(`您提供了${jdSuperMarketShareArr.length}个账号的助力码\n`);
     resolve()
@@ -1492,10 +1455,10 @@ function taskUrl(function_id, body = {}) {
 /**
  * 生成随机数字
  * @param {number} min 最小值（包含）
- * @param {number} max 最大值（包含）
+ * @param {number} max 最大值（不包含）
  */
-function randomFriendPin(min, max) {
-  return Math.round(Math.random()*(max - min) + min);
+function randomNumber(min = 0, max = 100) {
+  return Math.min(Math.floor(min + Math.random() * (max - min)), max);
 }
 function jsonParse(str) {
   if (typeof str == "string") {
