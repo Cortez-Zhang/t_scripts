@@ -29,7 +29,7 @@ let cookiesArr = [], cookie = '', jdFruitShareArr = [], isBox = false, notify, n
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
 let shareCodes = [ // 这个列表填入你要助力的好友的shareCode
    //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-  '0a74407df5df4fa99672a037eec61f7e@dbb21614667246fabcfd9685b6f448f3@6fbd26cc27ac44d6a7fed34092453f77@61ff5c624949454aa88561f2cd721bf6',
+  '0a74407df5df4fa99672a037eec61f7e@dbb21614667246fabcfd9685b6f448f3@6fbd26cc27ac44d6a7fed34092453f77@61ff5c624949454aa88561f2cd721bf6@56db8e7bc5874668ba7d5195230d067a',
   //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
   //'b1638a774d054a05a30a17d3b4d364b8@f92cb56c6a1349f5a35f0372aa041ea0@9c52670d52ad4e1a812f894563c746ea@8175509d82504e96828afc8b1bbb9cb3',
 ]
@@ -374,17 +374,6 @@ async function doTenWaterAgain() {
       console.log(`您目前水滴:${totalEnergy}g,水滴换豆卡${$.myCardInfoRes.beanCard}张,暂不满足水滴换豆的条件,为您继续浇水`)
     }
   }
-  // if (Date.now() < new Date(activeEndTime).getTime()) {
-  //   if (totalEnergy >= 100 && $.myCardInfoRes.beanCard > 0) {
-  //     //使用水滴换豆卡
-  //     await userMyCardForFarm('beanCard');
-  //     console.log(`使用水滴换豆卡结果:${JSON.stringify($.userMyCardRes)}`);
-  //     if ($.userMyCardRes.code === '0') {
-  //       message += `【水滴换豆卡】获得${$.userMyCardRes.beanCount}个京豆\n`;
-  //     }
-  //   }
-  //   return
-  // }
   // if (totalEnergy > 100 && $.myCardInfoRes.fastCard > 0) {
   //   //使用快速浇水卡
   //   await userMyCardForFarm('fastCard');
@@ -737,6 +726,14 @@ async function clockInIn() {
             console.log(`【惊喜礼包】获得${$.gotClockInGiftRes.amount}g💧\n`);
           }
         }
+      }
+    }
+    if ($.clockInInit.todaySigned && $.clockInInit.totalSigned === 7) {
+      console.log('开始领取--惊喜礼包38g水滴');
+      await gotClockInGift();
+      if ($.gotClockInGiftRes.code === '0') {
+        // message += `【惊喜礼包】获得${$.gotClockInGiftRes.amount}g💧\n`;
+        console.log(`【惊喜礼包】获得${$.gotClockInGiftRes.amount}g💧\n`);
       }
     }
     // 限时关注得水滴
