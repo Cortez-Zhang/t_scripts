@@ -156,7 +156,7 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
     try {
       if (fs.existsSync('watch.chlsj')) {
         preload()
-        if (doBody.length < 40){
+        if (doBody.length < 30){
           console.log(`${$.name}Body数小于40，无法完成任务！`)
         }
       }
