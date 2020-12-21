@@ -103,7 +103,7 @@ async function redPacket() {
           await receiveTaskRedpacket(item.taskType);
         } else if (item.innerStatus !== 4) {
           await startTask(item.taskType);
-          if (item.taskType !== 0) {
+          if (item.taskType !== 0 &&  item.taskType !== 1) {
             console.log(`开始做浏览任务\n`);
             await active(item.taskType);
             await receiveTaskRedpacket(item.taskType);

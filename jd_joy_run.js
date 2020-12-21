@@ -109,9 +109,6 @@ let count = 0;
 async function getToken() {
   const url = $request.url;
   $.log(`${$.name}url\n${url}\n`)
-  //if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/\/api\/user\/addUser\?code=\w+&/)) {
-  //if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/mirror\/\/api\/user\/addUser\?code=\w+&/)) {
-  //if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/mirror\/\/api\/user\/addUser\?code=/)) {
   if (isURL(url, /^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/addUser\?code=/)) {
     const body = JSON.parse($response.body);
     const LKYLToken = body.data && body.data.token;
@@ -138,9 +135,6 @@ async function getToken() {
       $.setdata(LKYLToken, 'jdJoyRunToken');
     }
     $.done({ body: JSON.stringify(body) })
-  //} else if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/\/api\/user\/user\/detail\?openId=\w+&/)){
-  //} else if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/mirror\/\/api\/user\/user\/detail\?openId=\w+&/)){
-  //} else if (isURL(url, /^https:\/\/draw\.jdfcloud\.com\/mirror\/\/api\/user\/user\/detail\?openId=/)){
   } else if (isURL(url, /^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/api\/user\/user\/detail\?openId=/)){
     if ($request && $request.method !== 'OPTIONS') {
       const LKYLToken = $request.headers['LKYLToken'];
@@ -231,8 +225,15 @@ function showMsg() {
   return new Promise(async resolve => {
     if ($.inviteReward || $.runReward) {
       let message = '';
-      message += `给${$.inviteReward / 30}人邀请助力成功,获得${$.inviteReward}积分\n给${$.runReward / 5}人赛跑助力成功,获得狗粮${$.runReward}g`;
-      $.msg($.name, '', `京东账号${$.index} ${UserName}\n${message}`);
+      if ($.inviteReward > 0) {
+        message += `给${$.inviteReward / 30}人邀请助力成功,获得${$.inviteReward}积分\n`;
+      }
+      if ($.runReward > 0) {
+        message += `给${$.runReward / 5}人赛跑助力成功,获得狗粮${$.runReward}g`;
+      }
+      if (message) {
+        $.msg($.name, '', `京东账号${$.index} ${UserName}\n${message}`);
+      }
     }
     resolve();
   })
