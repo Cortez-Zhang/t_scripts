@@ -985,6 +985,9 @@ async function gotStageAwardForFarm(type) {
 }
 //浇水API
 async function waterGoodForFarm() {
+  await $.wait(1000);
+  console.log('等待了1秒');
+
   const functionId = arguments.callee.name.toString();
   $.waterResult = await request(functionId);
 }
@@ -994,7 +997,7 @@ async function initForTurntableFarm() {
 }
 async function lotteryForTurntableFarm() {
   await $.wait(2000);
-  console.log('等待了5秒')
+  console.log('等待了2秒');
   $.lotteryRes = await request(arguments.callee.name.toString(), {type: 1, version: 4, channel: 1});
 }
 
@@ -1234,7 +1237,7 @@ function timeFormat(time) {
 }
 function readShareCode() {
   return new Promise(async resolve => {
-    $.get({url: `http://baidu.com/${randomCount}/`}, (err, resp, data) => {
+    $.get({url: `http://api.turinglabs.net/api/v1/jd/farm/read/${randomCount}/`}, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
