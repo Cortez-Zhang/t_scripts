@@ -187,10 +187,9 @@ function getExchangeRewards() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (data) {
+          $.getExchangeRewardsRes = {};
+          if (safeGet(data)) {
             $.getExchangeRewardsRes = JSON.parse(data);
-          } else {
-            console.log(`${$.name}api返回数据为空，请检查自身原因`)
           }
         }
       } catch (e) {
@@ -230,11 +229,10 @@ function exchange(saleInfoId, orderSource) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          //console.log(`${$.name}京豆api返回数据为空，请检查自身原因`)
-          if (data) {
+          console.log(`兑换结果:${data}`);
+          $.exchangeRes = {};
+          if (safeGet(data)) {
             $.exchangeRes = JSON.parse(data);
-          } else {
-            console.log(`${$.name}api返回数据为空，请检查自身原因`)
           }
         }
       } catch (e) {
@@ -294,6 +292,17 @@ function jsonParse(str) {
       $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
       return [];
     }
+  }
+}
+function safeGet(data) {
+  try {
+    if (typeof JSON.parse(data) == "object") {
+      return true;
+    }
+  } catch (e) {
+    console.log(e);
+    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
+    return false;
   }
 }
 // prettier-ignore
