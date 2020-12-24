@@ -39,6 +39,7 @@ if ($.isNode()) {
   cookiesArr.reverse();
   cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
   cookiesArr.reverse();
+  cookiesArr = cookiesArr.filter(item => item !== "" && item !== null && item !== undefined);
 }
 let message = '', subTitle = '';
 let FEED_NUM = ($.getdata('joyFeedCount') * 1) || 10;   //每次喂养数量 [10,20,40,80]
@@ -68,8 +69,6 @@ const weAppUrl = 'https://draw.jdfcloud.com//pet';
 
         if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-        } else {
-          $.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。$.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
         }
         continue
       }
@@ -139,8 +138,8 @@ async function joinTwoPeopleRun() {
     let teamLevelTemp = [];
     teamLevelTemp = $.isNode() ? (process.env.JOY_TEAM_LEVEL ? process.env.JOY_TEAM_LEVEL.split('&') : teamLevel.split('&')) : ($.getdata('JOY_TEAM_LEVEL') ? $.getdata('JOY_TEAM_LEVEL').split('&') : teamLevel.split('&'));
     teamLevelTemp = teamLevelTemp[$.index - 1] ? teamLevelTemp[$.index - 1] : 2;
-    console.log(`\n===========以下是${teamLevelTemp}人赛跑信息========\n`)
     await getPetRace();
+    console.log(`\n===以下是京东账号${$.index} ${$.nickName} ${$.petRaceResult.data.teamLimitCount || teamLevelTemp}人赛跑信息===\n`)
     if ($.petRaceResult) {
       let petRaceResult = $.petRaceResult.data.petRaceResult;
       // let raceUsers = $.petRaceResult.data.raceUsers;
@@ -149,13 +148,13 @@ async function joinTwoPeopleRun() {
         console.log(`暂未参赛，现在为您参加${teamLevelTemp}人赛跑`);
         await runMatch(teamLevelTemp * 1);
         if ($.runMatchResult.success) {
-          console.log(`${teamLevelTemp}人赛跑参加成功\n`);
-          message += `${teamLevelTemp}人赛跑：成功参加\n`;
-          await getPetRace();
-          petRaceResult = $.petRaceResult.data.petRaceResult;
-          await getRankList();
-          // raceUsers = $.petRaceResult.data.raceUsers;
-          // console.log(`参赛后的状态：${petRaceResult}`)
+          await getWinCoin();
+          console.log(`${$.getWinCoinRes.data.teamLimitCount || teamLevelTemp}人赛跑参加成功\n`);
+          message += `${$.getWinCoinRes.data.teamLimitCount || teamLevelTemp}人赛跑：成功参加\n`;
+          // if ($.getWinCoinRes.data['supplyOrder']) await energySupplyStation($.getWinCoinRes.data['supplyOrder']);
+          await energySupplyStation('2');
+          // petRaceResult = $.petRaceResult.data.petRaceResult;
+          // await getRankList();
           console.log(`双人赛跑助力请自己手动去邀请好友，脚本不带赛跑助力功能\n`);
         }
       }
@@ -168,18 +167,21 @@ async function joinTwoPeopleRun() {
       if (petRaceResult === 'unreceive') {
         console.log('今日参赛的比赛已经结束，现在领取奖励');
         await getWinCoin();
-        let winCoin = 0;
+        let winCoin = 0, teamLimitCount = 2;
         if ($.getWinCoinRes && $.getWinCoinRes.success) {
           winCoin = $.getWinCoinRes.data.winCoin;
+          teamLimitCount = $.getWinCoinRes.data.teamLimitCount;
         }
         await receiveJoyRunAward();
         console.log(`领取赛跑奖励结果：${JSON.stringify($.receiveJoyRunAwardRes)}`)
         if ($.receiveJoyRunAwardRes.success) {
-          $.msg($.name, '', `【京东账号${$.index}】${$.nickName}\n太棒了,${teamLevelTemp}人赛跑取得获胜\n恭喜您已获得${winCoin}积分奖励`);
-          if ($.isNode()) await notify.sendNotify(`${$.name} - 京东账号${$.index} - ${$.nickName}`, `京东账号${$.index}${$.nickName}\n${teamLevelTemp}人赛跑取得获胜\n恭喜您已获得${winCoin}积分奖励`)
+          $.msg($.name, '', `【京东账号${$.index}】${$.nickName}\n太棒了,${teamLimitCount}人赛跑取得获胜\n恭喜您已获得${winCoin}积分奖励`);
+          if ($.isNode()) await notify.sendNotify(`${$.name} - 京东账号${$.index} - ${$.nickName}`, `京东账号${$.index}${$.nickName}\n${teamLimitCount}人赛跑取得获胜\n恭喜您已获得${winCoin}积分奖励`)
         }
       }
       if (petRaceResult === 'participate') {
+        // if ($.getWinCoinRes.data['supplyOrder']) await energySupplyStation($.getWinCoinRes.data['supplyOrder']);
+        await energySupplyStation('2');
         await getRankList();
         if($.raceUsers && $.raceUsers.length > 0) {
           for (let index = 0; index < $.raceUsers.length; index++) {
@@ -729,6 +731,50 @@ function receiveJoyRunAward() {
           // console.log('查询应援团信息API',(data))
           // $.appGetPetTaskConfigRes = JSON.parse(data);
           $.receiveJoyRunAwardRes = JSON.parse(data);
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    })
+  })
+}
+//能力补给站
+async function energySupplyStation(showOrder) {
+  let status;
+  await getSupplyInfo(showOrder);
+  if ($.getSupplyInfoRes && $.getSupplyInfoRes.success) {
+    if ($.getSupplyInfoRes.data) {
+      const { marketList } = $.getSupplyInfoRes.data;
+      for (let list of marketList) {
+        if (!list['status']) {
+          await scanMarket('combat/supply', { showOrder, 'supplyType': 'scan_market', 'taskInfo': list.marketLink || list['marketLinkH5'], 'reqSource': 'weapp' });
+          await getSupplyInfo(showOrder);
+        } else {
+          $.log(`能力补给站 ${$.getSupplyInfoRes.data.addDistance}km里程 已领取\n`);
+          status = list['status'];
+        }
+      }
+      if (!status) {
+        await energySupplyStation(showOrder);
+      }
+    }
+  }
+}
+function getSupplyInfo(showOrder) {
+  return new Promise(resolve => {
+    const url = `${weAppUrl}/combat/getSupplyInfo?showOrder=${showOrder}`;
+    $.get(taskUrl(url, 'draw.jdfcloud.com', `weapp`), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log('\n京东宠汪汪: API查询请求失败 ‼️‼️')
+        } else {
+          // console.log('查询应援团信息API',(data))
+          // $.appGetPetTaskConfigRes = JSON.parse(data);
+          if (data) {
+            $.getSupplyInfoRes = JSON.parse(data);
+          }
         }
       } catch (e) {
         $.logErr(e, resp);
