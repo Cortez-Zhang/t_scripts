@@ -93,7 +93,7 @@ function showMsg() {
 let signFlag = 0;
 function userSignIn() {
   return new Promise(resolve => {
-    const body = {"activityId":"8d6845fe2e77425c82d5078d314d33c5","inviterId":"VMIQlLQqjQyjZokQmv5bIDgq011L0Ov8","channel":"MiniProgram"};
+    const body = {"activityId":"ccd8067defcd4787871b7f0c96fcbf5c","inviterId":"","channel":"MiniProgram"};
     $.get(taskUrl('userSignIn', body), async (err, resp, data) => {
       try {
         if (err) {
@@ -122,6 +122,10 @@ function userSignIn() {
                 signFlag ++;
                 await userSignIn();
               }
+            } else if (data.code === 66) {
+              //此处有时会遇到 服务器繁忙 导致签到失败,故重复三次签到
+              $.log(`${$.name}签到失败:${data.msg}`);
+              message += `【签到】失败，${data.msg}`;
             } else {
               console.log(`异常：${JSON.stringify(data)}`)
             }
