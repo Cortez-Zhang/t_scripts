@@ -274,25 +274,27 @@ function queryFurnituresCenterList() {
           if (safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
-              let { buy, list } = data.body;
-              $.canBuyList = [];
-              list.map((item, index) => {
-                if (buy.some((buyItem) => buyItem === item.id)) return
-                $.canBuyList.push(item);
-              })
-              $.canBuyList.sort(sortByjdBeanNum);
-              if ($.canBuyList[0].needWoB <= $.woB) {
-                await furnituresCenterPurchase($.canBuyList[0].id, $.canBuyList[0].jdBeanNum);
-              } else {
-                console.log(`\n兑换${$.canBuyList[0].jdBeanNum}京豆失败:当前wo币${$.woB}不够兑换所需的${$.canBuyList[0].needWoB}WO币`)
-                message += `【装饰领京豆】兑换${$.canBuyList[0].jdBeanNum}京豆失败,原因:WO币不够\n`;
+              if (data.body) {
+                let { buy, list } = data.body;
+                $.canBuyList = [];
+                list.map((item, index) => {
+                  if (buy.some((buyItem) => buyItem === item.id)) return
+                  $.canBuyList.push(item);
+                })
+                $.canBuyList.sort(sortByjdBeanNum);
+                if ($.canBuyList[0].needWoB <= $.woB) {
+                  await furnituresCenterPurchase($.canBuyList[0].id, $.canBuyList[0].jdBeanNum);
+                } else {
+                  console.log(`\n兑换${$.canBuyList[0].jdBeanNum}京豆失败:当前wo币${$.woB}不够兑换所需的${$.canBuyList[0].needWoB}WO币`)
+                  message += `【装饰领京豆】兑换${$.canBuyList[0].jdBeanNum}京豆失败,原因:WO币不够\n`;
+                }
+                // for (let canBuyItem of $.canBuyList) {
+                //   if (canBuyItem.needWoB <= $.woB) {
+                //     await furnituresCenterPurchase(canBuyItem.id, canBuyItem.jdBeanNum);
+                //     break
+                //   }
+                // }
               }
-              // for (let canBuyItem of $.canBuyList) {
-              //   if (canBuyItem.needWoB <= $.woB) {
-              //     await furnituresCenterPurchase(canBuyItem.id, canBuyItem.jdBeanNum);
-              //     break
-              //   }
-              // }
             }
           }
         }

@@ -19,6 +19,7 @@ const download = require('download');
 let resultPath = "./result.txt";
 let JD_DailyBonusPath = "./JD_DailyBonus.js";
 let outPutUrl = './';
+let NodeSet = 'CookieSet.json';
 let cookiesArr = [], cookie = '';
 
 if ($.isNode()) {
@@ -68,7 +69,7 @@ async function execSign() {
     const notifyContent = await fs.readFileSync(resultPath, "utf8");
     console.log(`👇👇👇👇👇👇👇👇👇👇👇LOG记录👇👇👇👇👇👇👇👇👇👇👇\n${notifyContent}\n👆👆👆👆👆👆👆👆👆LOG记录👆👆👆👆👆👆👆👆👆👆👆`);
     // await exec("node JD_DailyBonus.js", { stdio: "inherit" });
-    // console.log('执行完毕', new Date(new Date().getTime() + 8 * 60 * 60 * 1000).toLocaleDateString())
+    // console.log('执行完毕', new Date(new Date().getTime() + 8 * 3600000).toLocaleDateString())
     //发送通知
     if ($.isNode()) {
       let notifyContent = "";
@@ -137,6 +138,7 @@ async function downFile () {
 async function changeFile (content) {
   console.log(`开始替换变量`)
   let newContent = content.replace(/var Key = ''/, `var Key = '${cookie}'`);
+  newContent = newContent.replace(/const NodeSet = 'CookieSet.json'/, `const NodeSet = '${NodeSet}'`)
   if (process.env.JD_BEAN_STOP && process.env.JD_BEAN_STOP !== '0') {
     newContent = newContent.replace(/var stop = 0/, `var stop = ${process.env.JD_BEAN_STOP * 1}`);
   }
@@ -231,6 +233,7 @@ function requireConfig() {
       resultPath = err ? '/tmp/result.txt' : resultPath;
       JD_DailyBonusPath = err ? '/tmp/JD_DailyBonus.js' : JD_DailyBonusPath;
       outPutUrl = err ? '/tmp/' : outPutUrl;
+      NodeSet = err ? '/tmp/CookieSet.json' : NodeSet;
       resolve()
     });
   })
