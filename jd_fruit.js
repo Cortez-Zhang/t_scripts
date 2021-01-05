@@ -772,24 +772,28 @@ async function clockInIn() {
 //
 async function getAwardInviteFriend() {
   await friendListInitForFarm();//查询好友列表
-  console.log(`\n今日已邀请好友${$.friendList.inviteFriendCount}个 / 每日邀请上限${$.friendList.inviteFriendMax}个`);
-  console.log(`开始删除${$.friendList.friends.length}个好友,可拿每天的邀请奖励`);
-  for (let friend of $.friendList.friends) {
-    console.log(`\n开始删除好友 [${friend.shareCode}]`);
-    const deleteFriendForFarm = await request('deleteFriendForFarm', { "shareCode": `${friend.shareCode}`,"version":8,"channel":1 });
-    if (deleteFriendForFarm && deleteFriendForFarm.code === '0') {
-      console.log(`删除好友 [${friend.shareCode}] 成功\n`);
+  if ($.friendList) {
+    console.log(`\n今日已邀请好友${$.friendList.inviteFriendCount}个 / 每日邀请上限${$.friendList.inviteFriendMax}个`);
+    console.log(`开始删除${$.friendList.friends.length}个好友,可拿每天的邀请奖励`);
+    for (let friend of $.friendList.friends) {
+      console.log(`\n开始删除好友 [${friend.shareCode}]`);
+      const deleteFriendForFarm = await request('deleteFriendForFarm', { "shareCode": `${friend.shareCode}`,"version":8,"channel":1 });
+      if (deleteFriendForFarm && deleteFriendForFarm.code === '0') {
+        console.log(`删除好友 [${friend.shareCode}] 成功\n`);
+      }
     }
-  }
-  await receiveFriendInvite();//为他人助力,接受邀请成为别人的好友
-  if ($.friendList.inviteFriendCount > 0) {
-    if ($.friendList.inviteFriendCount > $.friendList.inviteFriendGotAwardCount) {
-      console.log('开始领取邀请好友的奖励');
-      await awardInviteFriendForFarm();
-      console.log(`领取邀请好友的奖励结果：：${JSON.stringify($.awardInviteFriendRes)}`);
+    await receiveFriendInvite();//为他人助力,接受邀请成为别人的好友
+    if ($.friendList.inviteFriendCount > 0) {
+      if ($.friendList.inviteFriendCount > $.friendList.inviteFriendGotAwardCount) {
+        console.log('开始领取邀请好友的奖励');
+        await awardInviteFriendForFarm();
+        console.log(`领取邀请好友的奖励结果：：${JSON.stringify($.awardInviteFriendRes)}`);
+      }
+    } else {
+      console.log('今日未邀请过好友')
     }
   } else {
-    console.log('今日未邀请过好友')
+    console.log(`查询好友列表失败\n`);
   }
 }
 //给好友浇水
