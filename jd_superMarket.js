@@ -157,11 +157,11 @@ async function doDailyTask() {
         const res = await smtgObtainShopTaskPrize(item.taskId);
         console.log(`\n领取做完任务的奖励${JSON.stringify(res)}\n`)
       }
+      //做任务
       if ((item.type === 1 || item.type === 11) && item.taskStatus === 0) {
         // 分享任务
         const res = await smtgDoShopTask(item.taskId);
         console.log(`${item.subTitle}结果${JSON.stringify(res)}`)
-
       }
       if (item.type === 2) {
         //逛会场
@@ -176,6 +176,15 @@ async function doDailyTask() {
         //关注店铺
         if (item.taskStatus === 0) {
           console.log('开始关注店铺')
+          const itemId = item.content[item.type].itemId;
+          const res = await smtgDoShopTask(item.taskId, itemId);
+          console.log(`${item.subTitle}结果${JSON.stringify(res)}`);
+        }
+      }
+      if (item.type === 9) {
+        //开卡领蓝币任务
+        if (item.taskStatus === 0) {
+          console.log('开始开卡领蓝币任务')
           const itemId = item.content[item.type].itemId;
           const res = await smtgDoShopTask(item.taskId, itemId);
           console.log(`${item.subTitle}结果${JSON.stringify(res)}`);
@@ -287,7 +296,6 @@ function smtgSign() {
 
 function smtgBeanSign() {
   return new Promise((resolve) => {
-    //$.get(taskUrl('smtg_sign',{“channel”: “1”), async (err, resp, data) => {
     $.get(taskUrl('smtg_sign',{"channel": "1"}), async (err, resp, data) => {
       try {
         // console.log('ddd----ddd', data)
@@ -760,7 +768,8 @@ function updatePkActivityIdCDN(url = 'https://raw.fastgit.org/lxk0301/updateTeam
 function smtgDoShopTask(taskId, itemId) {
   return new Promise((resolve) => {
     const body = {
-      "taskId": taskId
+      "taskId": taskId,
+      "channel": "18"
     }
     if (itemId) {
       body.itemId = itemId;

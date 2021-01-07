@@ -290,6 +290,7 @@ function enterRoom(invitePin) {
   return new Promise(resolve => {
     headers.Cookie = cookie;
     headers.LKYLToken = $.LKYLToken;
+    headers['Content-Type'] = "application/json";
     const options = {
       url: `${JD_BASE_API}/enterRoom/h5?reqSource=weapp&invitePin=${encodeURI(invitePin)}&inviteSource=task_invite&shareSource=weapp&inviteTimeStamp=${Date.now()}`,
       body: '{}',
@@ -301,8 +302,8 @@ function enterRoom(invitePin) {
           $.log(`${$.name} API请求失败`)
           $.log(JSON.stringify(err))
         } else {
-          data = JSON.parse(data);
           // console.log('进入房间', data)
+          data = JSON.parse(data);
         }
       } catch (e) {
         $.logErr(e, resp)
