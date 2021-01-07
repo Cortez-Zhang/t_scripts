@@ -81,7 +81,7 @@ async function execSign() {
         const barkContentStart = notifyContent.indexOf('【签到概览】')
         const barkContentEnd = notifyContent.length;
         if (process.env.JD_BEAN_SIGN_STOP_NOTIFY === 'true') return
-        if (notify.BARK_PUSH) process.env.JD_BEAN_SIGN_NOTIFY_SIMPLE = 'true';
+        if (process.env.BARK_PUSH || notify.BARK_PUSH) process.env.JD_BEAN_SIGN_NOTIFY_SIMPLE = 'true';
         if (process.env.JD_BEAN_SIGN_NOTIFY_SIMPLE === 'true') {
           if (barkContentStart > -1 && barkContentEnd > -1) {
             BarkContent = notifyContent.substring(barkContentStart, barkContentEnd);
