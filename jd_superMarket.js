@@ -84,14 +84,14 @@ let shareCodes = [ // IOS本地脚本用户这个列表填入你要助力的好�
       $.done();
     })
 async function jdSuperMarket() {
-  await receiveGoldCoin();//收金币
+  // await receiveGoldCoin();//收金币
   await businessCircleActivity();//商圈活动
   await receiveBlueCoin();//收蓝币（小费）
-  await receiveLimitProductBlueCoin();//收限时商品的蓝币
+  // await receiveLimitProductBlueCoin();//收限时商品的蓝币
   await daySign();//每日签到
   await BeanSign()//
   await doDailyTask();//做日常任务，分享，关注店铺，
-  await help();//商圈助力
+  // await help();//商圈助力
   //await smtgQueryPkTask();//做商品PK任务
   await drawLottery();//抽奖功能(招财进宝)
   // await myProductList();//货架
@@ -100,7 +100,8 @@ async function jdSuperMarket() {
   // await limitTimeProduct();
   await smtg_shopIndex();
   await smtgHome();
-  await receiveUserUpgradeBlue()
+  await receiveUserUpgradeBlue();
+  await Home();
 }
 function showMsg() {
   $.log(`【京东账号${$.index}】${$.nickName}\n${message}`);
@@ -714,7 +715,7 @@ async function receiveUserUpgradeBlue() {
   if ($.userUpgradeBlueVos && $.userUpgradeBlueVos.length > 0) {
     for (let item of $.userUpgradeBlueVos) {
       const receiveCoin = await smtgReceiveCoin({ "id": item.id, "type": 5 })
-      $.log(`\n${JSON.stringify(receiveCoin)}`)
+      // $.log(`\n${JSON.stringify(receiveCoin)}`)
       if (receiveCoin && receiveCoin.data['bizCode'] === 0) {
         $.receiveUserUpgradeBlue += receiveCoin.data.result['receivedBlue']
       }
@@ -725,6 +726,15 @@ async function receiveUserUpgradeBlue() {
   // $.log(`${JSON.stringify(res)}\n`)
   if (res && res.data['bizCode'] === 0) {
     console.log(`\n收取营业额：获得 ${res.data.result['receivedTurnover']}蓝币\n`);
+  }
+}
+async function Home() {
+  const homeRes = await smtgHome();
+  if (homeRes && homeRes.data['bizCode'] === 0) {
+    const { result } = homeRes.data;
+    const { shopName, totalBlue } = result;
+    subTitle = shopName;
+    message += `【总蓝币】${totalBlue}个\n`;
   }
 }
 //=============================================脚本使用到的京东API=====================================
@@ -742,7 +752,8 @@ function smtg_shopIndex() {
         } else {
           data = JSON.parse(data);
           if (data && data.data['bizCode'] === 0) {
-            const { shopId, shelfList } = data.data['result'];
+            const { shopId, shelfList, merchandiseList, level } = data.data['result'];
+            message += `【店铺等级】${level}\n`;
             if (shelfList && shelfList.length > 0) {
               for (let item of shelfList) {
                 //status: 2可解锁,1可升级,-1不可解锁
@@ -758,6 +769,16 @@ function smtg_shopIndex() {
                   $.log(`[${item['name']}] 已解锁，当前等级：${item['level']}级`)
                 } else {
                   $.log(`未知店铺状态(status)：${item['status']}\n`)
+                }
+              }
+            }
+            if (data.data['result']['forSaleMerchandise']) {
+              $.log(`\n限时商品${data.data['result']['forSaleMerchandise']['name']}已上架`)
+            } else {
+              if (merchandiseList && merchandiseList.length > 0) {
+                for (let  item of merchandiseList) {
+                  console.log(`发现限时商品${item.name}\n`);
+                  await smtg_sellMerchandise({"shopId": shopId,"merchandiseId": item['id'],"channel":"18"})
                 }
               }
             }
@@ -800,6 +821,26 @@ function smtg_shelfUpgrade(body) {
           console.log(JSON.stringify(err));
         } else {
           $.log(`店铺升级结果:${data}\n`)
+          data = JSON.parse(data);
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
+//售卖限时商品API
+function smtg_sellMerchandise(body) {
+  return new Promise((resolve) => {
+    $.get(taskUrl('smtg_sellMerchandise', body), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log('\n京小超: API查询请求失败 ‼️‼️')
+          console.log(JSON.stringify(err));
+        } else {
+          $.log(`限时商品售卖结果:${data}\n`)
           data = JSON.parse(data);
         }
       } catch (e) {
@@ -953,8 +994,6 @@ function smtgHome() {
             const { shopName, totalBlue, userUpgradeBlueVos, turnoverProgress } = result;
             $.userUpgradeBlueVos = userUpgradeBlueVos;
             $.turnoverProgress = turnoverProgress;//是否可解锁
-            subTitle = shopName;
-            message += `【总蓝币】${totalBlue}个\n`;
           }
         }
       } catch (e) {
