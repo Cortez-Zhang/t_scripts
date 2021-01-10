@@ -125,7 +125,7 @@ async function jdPet() {
 
     await petSport();//遛弯
     await slaveHelp();//助力好友
-    //await masterHelpInit();//获取助力的信息
+    await masterHelpInit();//获取助力的信息
     await doTask();//做日常任务
     await feedPetsAgain();//再次投食
     await energyCollect();//收集好感度
@@ -265,8 +265,8 @@ async function masterHelpInit() {
  * 运行脚本时你自己的shareCode会在控制台输出, 可以将其分享给他人
  */
 async function slaveHelp() {
-  $.log(`\n因1.6日好友助力功能下线。故暂时屏蔽\n`)
-  return
+  //$.log(`\n因1.6日好友助力功能下线。故暂时屏蔽\n`)
+  //return
   let helpPeoples = '';
   for (let code of newShareCodes) {
     console.log(`开始助力京东账号${$.index} - ${$.nickName}的好友: ${code}`);
