@@ -26,6 +26,7 @@ cron "0 9,12,18 * * *" script-path=https://raw.githubusercontent.com/lxk0301/jd_
  
 =========================小火箭===========================
 京喜农场 = type=cron,script-path=https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_jxnc.js, cronexpr="0 9,12,18 * * *", timeout=200, enable=true
+京喜农场APP种子cookie = type=http-request,script-path=https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_nc.cookie.js,pattern=^https\:\/\/wq\.jd\.com\/cubeactive\/farm\/dotask,max-size=131072,timeout=110,enable=true
 
 */
 
@@ -54,8 +55,8 @@ $.helpNum = 0; // 当前账号 助力 ret 1011 次数
 !(async () => {
     await requireConfig();
     if (!cookieArr[0]) {
-        $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {"open-url": "https://bean.m.jd.com/"});
-        return;
+      $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+      return;
     }
 
     for (let i = 0; i < cookieArr.length; i++) {
@@ -127,8 +128,8 @@ function requireConfig() {
 
         if ($.isNode()) {
             Object.keys(jdJxncShareCodeNode).forEach((item) => {
-                if (jxncShareCodeArr[item]) {
-                    jxncShareCodeArr.push(jxncShareCodeArr[item])
+                if (jdJxncShareCodeNode[item]) {
+                    jxncShareCodeArr.push(jdJxncShareCodeNode[item])
                 }
             })
         }
@@ -249,7 +250,7 @@ function getTaskList() {
             try {
                 const res = data.match(/try\{whyour\(([\s\S]*)\)\;\}catch\(e\)\{\}/)[1];
                 const {detail, msg, task = [], retmsg, ...other} = JSON.parse(res);
-                $.helpTask = task.filter(x => x.tasktype === 2)[0];
+                $.helpTask = task.filter(x => x.tasktype === 2)[0] || { eachtimeget: 0, limit: 0 };
                 $.allTask = task.filter(x => x.tasktype !== 3 && x.tasktype !== 2 && parseInt(x.left) > 0);
                 $.info = other;
                 $.log(`获取任务列表 ${retmsg} 总共${$.allTask.length}个任务！`);
@@ -351,6 +352,11 @@ function getMessage(endInfo) {
     const need = endInfo.target - endInfo.score;
     const get = $.drip;
     message += `【水滴】获得水滴${get} 还需水滴${need}\n`;
+    if (get > 0) {
+        const max = parseInt(need / get);
+        const min = parseInt(need / (get + $.helpTask.limit * $.helpTask.eachtimeget));
+        message += `【预测】还需 ${min} ~ ${max} 天\n`;
+    }
 }
 
 // 提交助力码
