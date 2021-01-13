@@ -38,7 +38,7 @@ if ($.isNode()) {
   cookiesArr.reverse();
   cookiesArr = cookiesArr.filter(item => item !== "" && item !== null && item !== undefined);
 }
-let jdNotify = true;//是否开启静默运行。默认true开启
+let jdNotify = false;//是否开启静默运行。默认true开启
 let message = '', subTitle = '';
 const JD_API_HOST = 'https://api.m.jd.com/'
 
