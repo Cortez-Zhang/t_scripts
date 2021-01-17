@@ -45,7 +45,6 @@
     "15 7 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_crazy_joy_coin.js, tag=crazyJoy挂机, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png",
 
     "13 * * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_pigPet.js, tag=京东金融养猪猪, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png",
-    "10 */3 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_daily_egg.js, tag=天天提鹅, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png",
-    "25 * * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_collectProduceScore.js, tag=京东全民营业领金币, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png"
+    "10 */3 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_daily_egg.js, tag=天天提鹅, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png"
   ]
 }
