@@ -1,9 +1,13 @@
 /*
 京东汽车兑换，500赛点兑换500京豆
 长期活动
-活动入口：首页👉京东汽车兑换👉屏幕右中部，车主福利
-更新地址：https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_car_exchange
-已支持IOS双京东账号, Node.js支持N个京东账号
+
+活动入口
+京东APP：首页👉京东汽车兑换👉屏幕右中部，车主福利
+活动网页地址：https://h5.m.jd.com/babelDiy/Zeus/44bjzCpzH9GpspWeBzYSqBA7jEtP/index.html#/journey
+
+更新地址：https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_car_exchange
+已支持IOS, Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, 小火箭，JSBox, Node.js
 
 ============Quantumultx===============
@@ -26,7 +30,7 @@ const $ = new Env('京东汽车兑换');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-let jdNotify = false;//是否关闭通知，false打开通知推送，true关闭通知推送
+let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
 const randomCount = $.isNode() ? 20 : 5;
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
