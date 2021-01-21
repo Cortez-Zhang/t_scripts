@@ -52,7 +52,9 @@
 
     "1 8 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_immortal.js, tag=京东神仙书院, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png",
     "8 8,21 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_firecrackers.js, tag=集鞭炮赢京豆, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png",
-    "19 8 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_nian_sign.js, tag=京东炸年兽签到任务🧨, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png"
+    "19 8 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_nian_sign.js, tag=京东炸年兽签到任务🧨, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png",
+    "2 9 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_nian_ar.js, tag=京东炸年兽AR, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png",
+    "5 9 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_nian_wechat.js, tag=京东炸年兽小程序🧨, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png"    
 
 
   ]
