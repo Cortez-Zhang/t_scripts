@@ -5,7 +5,7 @@
  * @Last Modified time: 2020-10-30 20:37:24
 */
 /*
-京东全民开红包（京东app->主页->领券->抢红包(在底部)）
+京东全民开红包（京东app->首页->领券->锦鲤红包）
 已完成功能：
 ①浏览活动
 ②关注频道
@@ -23,7 +23,7 @@ Loon
 [Script]
 cron "1 1 * * *" script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_redPacket.js, tag=京东全民开红包
 Surge
-京东全民开红包 = type=cron,cronexp=1 1 * * *,wake-system=1,timeout=20,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_redPacket.js
+京东全民开红包 = type=cron,cronexp=1 1 * * *,wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_redPacket.js
  */
 const $ = new Env('京东全民开红包');
 const notify = $.isNode() ? require('./sendNotify') : '';
