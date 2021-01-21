@@ -10,15 +10,17 @@ Some Functions Modified From https://github.com/Zero-S1/JD_tools/blob/master/JD_
 支持京东双账号
 京小超兑换奖品请使用此脚本 https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
-// QuantumultX
+=================QuantumultX==============
 [task_local]
 #东东超市
 11 1-23/5 * * * https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_superMarket.js, tag=东东超市, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxc.png, enabled=true
-// Loon
+===========Loon===============
 [Script]
 cron "11 1-23/5 * * *" script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_superMarket.js,tag=东东超市
-// Surge
+=======Surge===========
 东东超市 = type=cron,cronexp="11 1-23/5 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_superMarket.js
+==============小火箭=============
+东东超市 = type=cron,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_superMarket.js, cronexpr="11 1-23/5 * * *", timeout=3600, enable=true
  */
 const $ = new Env('东东超市');
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -39,7 +41,7 @@ let shareCodes = [ // IOS本地脚本用户这个列表填入你要助力的好�
   //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
   '-4msulYas0O2JsRhE-2TA5XZmBQ@eU9Yar_mb_9z92_WmXNG0w@eU9YaejjYv4g8T2EwnsVhQ',
   //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-  //'aURoM7PtY_Q@eU9Ya-y2N_5z9DvXwyIV0A@eU9YaOnjYK4j-GvWmXIWhA',
+  'aURoM7PtY_Q@eU9Ya-y2N_5z9DvXwyIV0A@eU9YaOnjYK4j-GvWmXIWhA',
 ]
 
 !(async () => {
