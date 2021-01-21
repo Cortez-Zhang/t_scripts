@@ -4,7 +4,20 @@
 仅仅是收集一下京东炸年兽领爆竹活动每秒产生的爆竹🧨
 
 每小时的第20分运行一次
-20 * * * * https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_nianCollect.js
+============Quantumultx===============
+[task_local]
+#京东炸年兽🧨
+20 * * * * https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_nianCollect.js, tag=京东收🧨, enabled=true
+
+================Loon==============
+[Script]
+cron "20 * * * *" script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_nianCollect.js,tag=京东收🧨
+
+===============Surge=================
+京东收🧨 = type=cron,cronexp="20 * * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_nianCollect.js
+
+============小火箭=========
+京东收🧨 = type=cron,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_nianCollect.js, cronexpr="20 * * * *", timeout=3600, enable=true
  */
 const $ = new Env('京东炸年兽领爆竹🧨');
 //Node.js用户请在jdCookie.js处填写京东ck;
