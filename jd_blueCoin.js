@@ -6,20 +6,20 @@
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ============QuantumultX==============
 [task_local]
-#京小超兑换奖品
-0 0 0 * * * https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js, tag=京小超兑换奖品, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxc.png, enabled=true
+#东东超市兑换奖品
+0 0 0 * * * https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js, tag=东东超市兑换奖品, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxc.png, enabled=true
 
 ====================Loon=================
 [Script]
-cron "0 0 0 * * *" script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js,tag=京小超兑换奖品
+cron "0 0 0 * * *" script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js,tag=东东超市兑换奖品
 
 ===================Surge==================
-京小超兑换奖品 = type=cron,cronexp="0 0 0 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js
+东东超市兑换奖品 = type=cron,cronexp="0 0 0 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js
 
 ============小火箭=========
-京小超兑换奖品 = type=cron,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js, cronexpr="0 0 0 * * *", timeout=3600, enable=true
+东东超市兑换奖品 = type=cron,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_blueCoin.js, cronexpr="0 0 0 * * *", timeout=3600, enable=true
  */
-const $ = new Env('京小超兑换奖品');
+const $ = new Env('东东超市兑换奖品');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -318,7 +318,7 @@ function smtgHome() {
     $.get(taskUrl('smtg_home'), (err, resp, data) => {
       try {
         if (err) {
-          console.log('\n京小超兑换奖品: API查询请求失败 ‼️‼️')
+          console.log('\n东东超市兑换奖品: API查询请求失败 ‼️‼️')
           console.log(JSON.stringify(err));
         } else {
           if (safeGet(data)) {
