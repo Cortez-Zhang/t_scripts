@@ -31,6 +31,7 @@ let jdNotify = false;//用来是否关闭弹窗通知，true表示关闭，false
 let superMarketUpgrade = true;//自动升级,顺序:解锁升级商品、升级货架,true表示自动升级,false表示关闭自动升级
 let businessCircleJump = true;//小于对方300热力值自动更换商圈队伍,true表示运行,false表示禁止
 let drawLotteryFlag = false;//是否用500蓝币去抽奖，true表示开启，false表示关闭。默认关闭
+let joinPkTeam = true;//是否自动加入PK队伍
 let message = '', subTitle;
 const JD_API_HOST = 'https://api.m.jd.com/api';
 
@@ -309,58 +310,40 @@ function smtgSign(body) {
 // 商圈活动
 async function businessCircleActivity() {
   // console.log(`\n商圈PK奖励,次日商圈大战开始的时候自动领领取\n`)
+  joinPkTeam = $.isNode() ? (process.env.JOIN_PK_TEAM ? process.env.JOIN_PK_TEAM : `${joinPkTeam}`) : ($.getdata('JOIN_PK_TEAM') ? $.getdata('JOIN_PK_TEAM') : `${joinPkTeam}`);
   const smtg_getTeamPkDetailInfoRes = await smtg_getTeamPkDetailInfo();
   if (smtg_getTeamPkDetailInfoRes && smtg_getTeamPkDetailInfoRes.data.bizCode === 0) {
     const { joinStatus, pkStatus, inviteCount, inviteCode, currentUserPkInfo, pkUserPkInfo, prizeInfo, pkActivityId, teamId } = smtg_getTeamPkDetailInfoRes.data.result;
     console.log(`\njoinStatus:${joinStatus}`);
     console.log(`pkStatus:${pkStatus}\n`);
-    if (joinStatus === 0) {
-      console.log(`\n注：PK会在每天的七点自动随机加入LXK9301创建的队伍\n`)
-      await updatePkActivityId();
-      if (!$.updatePkActivityIdRes) await updatePkActivityIdCDN('https://gitee.com/lxk0301/updateTeam/raw/master/jd_updateTeam.json');
-      if (!$.updatePkActivityIdRes) await updatePkActivityIdCDN('https://cdn.jsdelivr.net/gh/LXK9301/updateTeam@master/jd_updateTeam.json');
-      console.log(`\nupdatePkActivityId[pkActivityId]:::${$.updatePkActivityIdRes.pkActivityId}`);
-      console.log(`\n京东服务器返回的[pkActivityId] ${pkActivityId}`);
-      if ($.updatePkActivityIdRes && ($.updatePkActivityIdRes.pkActivityId === pkActivityId)) {
-        let Teams = [
-          {
-            "teamId": "-4msulYas0O2JsRhE-2TA5XZmBQ_1604247312176",
-            "inviteCode": "-4msulYas0O2JsRhE-2TA5XZmBQ"
-          },
-          {
-            "teamId": "Ih4-a-mwZPUj9Gy6iw_1604277683224",
-            "inviteCode": "eU9Yar_mb_9z92_WmXNG0w"
-          },
-          {
-            "teamId": "eU9Ya77gZK5z-TqHn3UWhQ_1604277779750",
-            "inviteCode": "eU9YaOnjYK4j-GvWmXIWhA"
-          },
-          {
-            "teamId": "eU9Ya-y2N_5z9DvXwyIV0A",
-            "inviteCode": "eU9YaLm0bq4i-TrUzSUUhA"
-          },
-          {
-            "teamId": "eU9Ya-y2N_5z9DvXwyIV0A",
-            "inviteCode": "aURoM7PtY_Q"
-          },
-          {
-            "teamId": "eU9Ya-y2N_5z9DvXwyIV0A",
-            "inviteCode": "eU9YaeS3Z6ol8zrRmnMb1Q"
-          }
-        ]
-        Teams = $.updatePkActivityIdRes['Teams'] || Teams;
-        const randomNum = randomNumber(0, Teams.length);
+    console.log(`pkActivityId:${pkActivityId}\n`);
 
-        const res = await smtg_joinPkTeam(Teams[randomNum].teamId, Teams[randomNum].inviteCode, pkActivityId);
-        if (res && res.data.bizCode === 0) {
-          console.log(`加入战队成功`)
-        } else if (res && res.data.bizCode === 229) {
-          console.log(`加入战队失败,该战队已满\n无法加入`)
+    if (joinStatus === 0) {
+      if (joinPkTeam === 'true') {
+        await getTeam();
+        console.log(`\n注：PK会在每天的七点自动随机加入LXK9301创建的队伍\n`)
+        await updatePkActivityId();
+        if (!$.updatePkActivityIdRes) await updatePkActivityIdCDN('https://gitee.com/lxk0301/updateTeam/raw/master/jd_updateTeam.json');
+        if (!$.updatePkActivityIdRes) await updatePkActivityIdCDN('https://cdn.jsdelivr.net/gh/LXK9301/updateTeam@master/jd_updateTeam.json');
+        console.log(`\nupdatePkActivityId[pkActivityId]:::${$.updatePkActivityIdRes.pkActivityId}`);
+        console.log(`\n京东服务器返回的[pkActivityId] ${pkActivityId}`);
+        if ($.updatePkActivityIdRes && ($.updatePkActivityIdRes.pkActivityId === pkActivityId)) {
+          let Teams = []
+          Teams = $.updatePkActivityIdRes['Teams'] || Teams;
+          Teams = [...Teams, ...$.getTeams.filter(item => item['pkActivityId'] === `${pkActivityId}`)];
+          const randomNum = randomNumber(0, Teams.length);
+
+          const res = await smtg_joinPkTeam(Teams[randomNum] && Teams[randomNum].teamId, Teams[randomNum] && Teams[randomNum].inviteCode, pkActivityId);
+          if (res && res.data.bizCode === 0) {
+            console.log(`加入战队成功`)
+          } else if (res && res.data.bizCode === 229) {
+            console.log(`加入战队失败,该战队已满\n无法加入`)
+          } else {
+            console.log(`加入战队其他未知情况:${JSON.stringify(res)}`)
+          }
         } else {
-          console.log(`加入战队其他未知情况:${JSON.stringify(res)}`)
+          console.log('\nupdatePkActivityId请求返回的pkActivityId与京东服务器返回不一致,暂时不加入战队')
         }
-      } else {
-        console.log('\nupdatePkActivityId请求返回的pkActivityId与京东服务器返回不一致,暂时不加入战队')
       }
     } else if (joinStatus === 1) {
       if (teamId) {
@@ -378,10 +361,6 @@ async function businessCircleActivity() {
         const receivedPkTeamPrize = await smtg_receivedPkTeamPrize();
         console.log(`商圈PK奖励领取结果：${JSON.stringify(receivedPkTeamPrize)}\n`)
         if (receivedPkTeamPrize.data.bizCode === 0) {
-          //const { pkTeamPrizeInfoVO } = receivedPkTeamPrize.data.result;
-          //message += `【商圈PK奖励】${pkTeamPrizeInfoVO.blueCoin}蓝币领取成功\n`;
-          //if ($.isNode()) {
-          //  await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】 ${$.nickName}\n【商圈PK奖励】${pkTeamPrizeInfoVO.blueCoin}蓝币领取成功`)
           if (receivedPkTeamPrize.data.result.pkResult === 1) {
             const { pkTeamPrizeInfoVO } = receivedPkTeamPrize.data.result;
             message += `【商圈PK奖励】${pkTeamPrizeInfoVO.blueCoin}蓝币领取成功\n`;
@@ -1590,6 +1569,28 @@ function TotalBean() {
         resolve();
       }
     })
+  })
+}
+function getTeam() {
+  return new Promise(async resolve => {
+    $.getTeams = [];
+    $.get({url: `http://jd.turinglabs.net/api/v2/jd/supermarket/read/100000/`, timeout: 100000}, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          data = JSON.parse(data);
+          $.getTeams = data['data'];
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+    await $.wait(10000);
+    resolve()
   })
 }
 function taskUrl(function_id, body = {}) {

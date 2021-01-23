@@ -8,7 +8,7 @@
 ============Quantumultx===============
 [task_local]
 #获取互助码
-20 13 * * 6 https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_get_share_code.js, tag=获取互助码, enabled=true
+20 13 * * 6 https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_get_share_code.js, tag=获取互助码, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png, enabled=true
 
 ================Loon==============
 [Script]
@@ -321,12 +321,16 @@ function getJxNc(){
             if (safeGet(data)) {
               data = JSON.parse(data);
               if (data["ret"] === 0) {
-                console.log(`【账号${$.index}（${$.nickName || $.UserName}）京喜农场助力码】${data.smp}`);
-
                 if (data.active) {
-                  console.log(`【账号${$.index}（${$.nickName || $.UserName}）京喜农场active】${data.active}`);
+                  let shareCodeJson = {
+                    'smp': data.smp,
+                    'active': data.active,
+                    'joinnum': data.joinnum,
+                  };
+                  console.log(`注意：京喜农场 种植种子发生变化的时候，互助码也会变！！`);
+                  console.log(`【账号${$.index}（${$.nickName || $.UserName}）京喜农场】` + JSON.stringify(shareCodeJson));
                 } else {
-                  console.log( `【账号${$.index}（${$.nickName || $.UserName}）京喜农场】未选择种子，请先去京喜农场选择种子`);
+                  console.log(`【账号${$.index}（${$.nickName || $.UserName}）京喜农场】未选择种子，请先去京喜农场选择种子`);
                 }
               }
             } else {
