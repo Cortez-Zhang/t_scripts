@@ -1,5 +1,8 @@
 /*
 自用于github action
+京东抽奖机
+活动入口：京东APP中各种抽奖活动的汇总
+自用
 author：yangtingxiao
 github： https://github.com/yangtingxiao
 京东抽奖机

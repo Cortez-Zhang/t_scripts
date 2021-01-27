@@ -6,7 +6,8 @@
  */
 /*
 十元街脚本，一周签到下来可获得30京豆，一天任意时刻运行一次即可
-更新地址：https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_syj.js
+活动入口：赚京豆(微信小程序)-赚京豆-签到领京豆
+更新地址：https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_syj.js
 参考github@jidesheng6修改而来
 已支持IOS双京东账号, Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, 小火箭，JSBox, Node.js

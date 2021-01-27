@@ -1,4 +1,7 @@
 /*
+
+活动入口：京东APP首页-更多频道-特色频道-排行榜-悬浮按钮今日王牌领京豆
+
 自用于github action
 author：yangtingxiao
 github： https://github.com/yangtingxiao

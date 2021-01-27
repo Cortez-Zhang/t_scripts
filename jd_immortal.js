@@ -5,8 +5,8 @@
 环境变量：JD_IMMORTAL_LATLON(经纬度)
 示例：JD_IMMORTAL_LATLON={"lat":33.1, "lng":118.1}
 boxjs IMMORTAL_LATLON
-活动入口: 京东app-我的-神仙书院
-活动地址：https://h5.m.jd.com//babelDiy//Zeus//4XjemYYyPScjmGyjej78M6nsjZvj//index.html?babelChannel=ttt9
+活动入口：京东app-我的-神仙书院
+地址：https://h5.m.jd.com//babelDiy//Zeus//4XjemYYyPScjmGyjej78M6nsjZvj//index.html?babelChannel=ttt9
 已支持IOS双京东账号,Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ============Quantumultx===============
@@ -273,7 +273,10 @@ function getTaskList(body = {}) {
 function readShareCode() {
   console.log(`开始`)
   return new Promise(async resolve => {
-    $.get({url: `https://baidu.com/api/v1/jd/jdnian/read/${randomCount}/`, 'timeout': 10000}, (err, resp, data) => {
+    $.get({
+      url: `http://jd.turinglabs.net/api/v2/jd/immortal/read/${randomCount}/`,
+      'timeout': 10000
+    }, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
