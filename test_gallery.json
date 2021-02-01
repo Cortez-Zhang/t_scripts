@@ -67,8 +67,12 @@
 
     "0 0,6,12,18 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_5g.js, tag=5G狂欢城, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png",
     "0 0-18/6 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_818.js, tag=京东手机狂欢城, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png",
-    "27 7 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_xgyl.js, tag=小鸽有礼2, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png"
-    
+    "27 7 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_xgyl.js, tag=小鸽有礼2, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png",
+
+    "17 8,12 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_newYearMoney.js, tag=京东压岁钱, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png",
+    "0 0 9,12,16,20 * * * https://raw.githubusercontent.com/Cortez-Zhang/t_scripts/main/jd_newYearMoney_lottery.js, tag=京东压岁钱抢百元卡, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png"
+
+
     
     
 
