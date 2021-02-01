@@ -81,29 +81,22 @@ let userInfo = null, taskInfo = [], message = '', subTitle = '', fruitTotal = 0;
       $.done();
     })
 async function jd_moneyTree() {
-  const userRes = await user_info();
-  if (!userRes || !userRes.realName) return
-  await signEveryDay();
-  await dayWork();
-  await harvest();
-  await sell();
-  await myWealth();
-  await stealFriendFruit()
-  //await msgControl();
+  try {
+    const userRes = await user_info();
+    if (!userRes || !userRes.realName) return
+    await signEveryDay();
+    await dayWork();
+    await harvest();
+    await sell();
+    await myWealth();
+    await stealFriendFruit()
 
-  //console.log(`运行脚本次数和设置的次数是否相等::${($.getdata($.treeMsgTime) * 1) === Notice}`);
-  //jdNotify = $.getdata('jdMoneyTreeNotify') ? $.getdata('jdMoneyTreeNotify') : jdNotify;
-  //console.log(`box订阅静默运行-是否打开::${jdNotify || jdNotify === 'true'}`);
-  //console.log(`是否弹窗通知::${(($.getdata($.treeMsgTime) * 1) === Notice) && (!jdNotify || jdNotify === 'false')}`);
-  $.log(`\n${message}\n`);
-  if (!jdNotify || jdNotify === 'false') {
-    //if (($.getdata($.treeMsgTime) * 1) === Notice) {
-      //$.msg($.name, subTitle, message);
-      //$.setdata('0', $.treeMsgTime);
-    //}
-    
-    $.msg($.name, subTitle, message);
-    //$.setdata('0', $.treeMsgTime);  
+    $.log(`\n${message}\n`);
+    if (!jdNotify || jdNotify === 'false') {
+      $.msg($.name, subTitle, message);
+    }
+  } catch (e) {
+    $.logErr(e)
   }
 }
 function user_info() {
