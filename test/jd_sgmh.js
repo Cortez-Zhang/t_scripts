@@ -59,7 +59,7 @@ const JD_API_HOST = `https://api.m.jd.com/client.action`;
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
       $.index = i + 1;
       $.isLogin = true;
-      $.nickName = '';
+      $.nickName = $.UserName;
       $.beans = 0
       message = ''
       await shareCodesFormat();
@@ -303,7 +303,7 @@ function readShareCode() {
   console.log(`开始`)
   return new Promise(async resolve => {
     $.get({
-      url: `https://api.sharecode.ga/api/sgmh/${randomCount}`, 'timeout': 10000}, (err, resp, data) => {
+      url: `https://api.jdsharecode.xyz/api/sgmh/${randomCount}`, 'timeout': 10000}, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
